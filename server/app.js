@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const cors = require('cors');
 require('dotenv').config();
 
 var indexRouter = require('./routes/index');
@@ -11,6 +12,7 @@ const connectDB = require('./db');
 
 
 var app = express();
+app.use(cors());
 connectDB();
 app.use(logger('dev'));
 app.use(express.json());
@@ -24,16 +26,14 @@ app.use('/users', usersRouter);
 app.use(function(req, res, next) {
   next(createError(404));
 });
-console.log("here")
 
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-  console.log(err, 'err')
   // render the error page
-  res.status(500).send({err:"something went wrong"});
+  res.status(500).send({err: err.message || "something went wrong"});
 });
 
 module.exports = app;
