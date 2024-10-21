@@ -1,11 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-// const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const User = require("../models/User.js");
 require('dotenv').config();
-
-// console.log(process.env.e/m)
 
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
@@ -26,14 +23,15 @@ exports.registerUser = async (req, res) => {
           return res.status(400).json({ msg: 'User already exists' });
       }
 
-      user = new User({ name, email, password: await bcrypt.hash(password, 10) });
+      user = new User({ name, email, password: await bcrypt.hash(password, 10), phone });
 
+      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
       const mailOptions = {
         to: user.email,
         from: process.env.EMAIL_USER,
         subject: 'Please click on link to verify!',
-        text: `${user.name}, Success Link`,
+        text: `${user.name}, Please Click on this link to verify ${process.env.CLIENT_URI}/users/verifyUser?token=${token}`,
       };
 
       transporter.sendMail(mailOptions, async (error) => {
@@ -50,54 +48,101 @@ exports.registerUser = async (req, res) => {
   }
 }
 
-exports.loginUser = async (req, res) => {
-  const { email, password } = req.body;
+exports.verifyUser = async (req, res) => {
+  const token = req.query.token;
 
   try {
-      const user = await User.findOne({ email });
-      if (!user || !(await bcrypt.compare(password, user.password))) {
-          return res.status(400).json({ msg: 'Invalid credentials' });
-      }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-      res.json({ token });
+    const user = await User.findById(decoded.userId);
+    if (!user) return res.status(400).json({ message: "User not found" });
+
+    if (user.isVerified) {
+      return res.status(400).json({ message: "User already verified" });
+    }
+
+    user.isVerified = true;
+    await user.save();
+
+    res.status(200).json({ message: "User verified successfully" });
+
   } catch (error) {
       console.error(error);
       res.status(500).send('Server error');
   }
 }
 
-exports.forgotUser = async (req, res) => {
-  const { email } = req.body;
-
+exports.loginUser = async (req, res) => {
   try {
-      const user = await User.findOne({ email });
-      if (!user) {
-          return res.status(400).json({ msg: 'No user found with this email' });
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: "User not found" });
+
+    if (!user.isVerified) {
+      return res.status(400).json({ message: "User not verified. Please check your email for verification link." });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+
+    const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+    res.status(200).json({ token, message: "Login successful" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: "User not found" });
+
+    const resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "15m" });
+
+    const resetLink = `${process.env.CLIENT_URI}/reset-password/${resetToken}`;
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Reset your password",
+      text: `Click the link to reset your password: ${resetLink}`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).json({ message: "Error sending email" });
       }
+      res.status(200).json({ message: "Password reset link sent to your email." });
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
 
-      const resetToken = crypto.randomBytes(20).toString('hex');
-      user.resetPasswordToken = resetToken;
-      user.resetPasswordExpires = Date.now() + 3600000; // 1 hour expiration
-      await user.save();
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { newPassword } = req.body;
 
-      const resetUrl = `${process.env.RESET_PASSWORD_URL}/${resetToken}`;
-      const mailOptions = {
-          to: user.email,
-          from: process.env.EMAIL_USER,
-          subject: 'Password Reset Request',
-          text: `You are receiving this because you have requested to reset your password. Please click the link to reset: ${resetUrl}`,
-      };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      transporter.sendMail(mailOptions, (error) => {
-          if (error) {
-              return res.status(500).json({ msg: 'Error sending email' });
-          }
-          res.json({ msg: 'Email sent with password reset instructions' });
-      });
-  } catch (error) {
-      console.error(error);
-      res.status(500).send('Server error');
+    const user = await User.findById(decoded.id);
+    if (!user) return res.status(400).json({ message: "User not found" });
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successfully" });
+  } catch (err) {
+    if (err.name === "TokenExpiredError") {
+      return res.status(400).json({ message: "Reset link expired" });
+    }
+    res.status(500).json({ message: "Invalid or expired reset link" });
   }
 }
 
