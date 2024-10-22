@@ -9,7 +9,7 @@ const UserVerification = () => {
   useEffect(() => {
     const verifyUser = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_SERVER_URI}/users/verify/${token}`, {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URI}/users/verifyUser?token=${token}`, {
           method: 'GET',
         });
 

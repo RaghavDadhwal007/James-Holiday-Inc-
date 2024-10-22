@@ -20,7 +20,7 @@ exports.registerUser = async (req, res) => {
   try {
       let user = await User.findOne({ email });
       if (user) {
-          return res.status(400).json({ msg: 'User already exists' });
+          return res.status(400).json({ message: 'User already exists' });
       }
 
       user = new User({ name, email, password: await bcrypt.hash(password, 10), phone });
@@ -31,16 +31,16 @@ exports.registerUser = async (req, res) => {
         to: user.email,
         from: process.env.EMAIL_USER,
         subject: 'Please click on link to verify!',
-        text: `${user.name}, Please Click on this link to verify ${process.env.CLIENT_URI}/users/verifyUser?token=${token}`,
+        text: `${user.name}, Please Click on this link to verify ${process.env.CLIENT_URI}/verify/${token}`,
       };
 
       transporter.sendMail(mailOptions, async (error) => {
           if (error) {
               console.error('Error sending welcome email:', error);
-              return res.status(500).json({ msg: 'User registered but email not sent' });
+              return res.status(500).json({ message: 'User registered but email not sent' });
           }
         await user.save();
-        res.json({ token, msg: 'User registered successfully and welcome email sent' });
+        res.json({ token, message: 'User registered successfully and welcome email sent' });
       });
   } catch (error) {
       console.error(error);
