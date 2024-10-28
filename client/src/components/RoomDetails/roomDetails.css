@@ -1,0 +1,45 @@
+.carousel {
+    position: relative;
+    max-width: 600px;
+    margin: auto;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+
+  .slides {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+  }
+
+  .slide {
+    min-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .carousel img {
+    width: 100%;
+    height: auto;
+  }
+p{
+  text-align: center;
+}
+
+
+
+
+  /* Navigation buttons */
+  .prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    color: #333;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 8px;
+    border-radius: 50%;
+    user-select: none;
+  }
+
+  .prev { left: 10px; }
+  .next { right: 10px; }
