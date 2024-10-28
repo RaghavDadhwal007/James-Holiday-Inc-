@@ -1,5 +1,5 @@
 const express = require('express');
-const roomTypeController = require('../controllers/roomTypeController');
+const roomTypeController = require('../controller/roomTypeController');
 const router = express.Router();
 
 router.post('/', roomTypeController.createRoomType);

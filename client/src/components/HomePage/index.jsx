@@ -29,7 +29,7 @@ function HomePage() {
       
 
       {/* Hero Section */}
-      {/* <section className="hero">
+      <section className="hero">
         <img
           src="https://i0.wp.com/theluxurytravelexpert.com/wp-content/uploads/2017/10/six-senses-zil-payson-seychelles.jpg?fit=1300%2C731&ssl=1"
           alt="Hotel"
@@ -53,10 +53,10 @@ function HomePage() {
             <button className="search-btn">Check Availability</button>
           </div>
         </div>
-      </section> */}
+      </section>
 
       {/* Featured Rooms Section */}
-      {/* <section className="featured-rooms">
+      <section className="featured-rooms">
         <h2>Featured Rooms</h2>
         <div className="room-cards">
           <div className="room-card">
@@ -79,7 +79,7 @@ function HomePage() {
           </div>
           
         </div>
-      </section>*/}
+      </section>
 
       {/* Amenities Section */}
       <section className="amenities">
