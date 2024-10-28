@@ -1,0 +1,149 @@
+/* General Styling */
+body {
+    background-image: linear-gradient(to right, #667eea, #764ba2);
+    font-family: Arial, sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Navbar */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #764ba2;
+    color: white;
+  }
+  
+  .navbar .logo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navbar .logo img {
+    width: 50px;
+    margin-right: 10px;
+  }
+  
+  .navbar .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+  
+  .navbar .nav-links a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  .center-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-height: 100vh;
+    width: 100%;
+  }
+  
+  /* Profile Container */
+  .profile-container {
+    background-color: #fff;
+    width: 500px;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 1s ease;
+  }
+  
+  .profile-container h2 {
+    text-align: center;
+    color: #764ba2;
+    margin-bottom: 20px;
+    font-size: 26px;
+  }
+  
+  .profile-picture {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: block;
+    object-fit: cover;
+    border: 3px solid #764ba2;
+  }
+  
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .profile-info label {
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .profile-info p {
+    font-size: 16px;
+    margin: 0;
+    padding: 8px;
+    background-color: #f4f4f9;
+    border-radius: 8px;
+    color: #333;
+  }
+  
+  .preferences {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+  }
+  
+  .edit-profile-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #764ba2;
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 20px;
+    text-align: center;
+    text-decoration: none;
+  }
+  
+  .edit-profile-btn:hover {
+    background-color: #5c3d8e;
+    transform: scale(1.05);
+  }
+  
+  .footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #764ba2;
+    color: white;
+  }
+  
+  .quick-links {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+  
+  .quick-links a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
