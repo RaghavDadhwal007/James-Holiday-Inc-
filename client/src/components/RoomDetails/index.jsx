@@ -64,13 +64,12 @@ function RoomDetails() {
       headers: {
           'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ amount: 1000 }) 
+      body: JSON.stringify({amount}) 
   });
   const session = await response.json();
 
   await stripe.redirectToCheckout({ sessionId: session.id });
 };
- console.log('roomDetailsData', roomDetailsData)
 
  return (
    <div className="rd-page">
