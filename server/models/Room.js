@@ -18,6 +18,12 @@ const roomSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  availabilityStart: {
+    type: Date,
+  },
+  availabilityEnd: {
+    type: Date,
+  },
   status: {
     type: String,
     enum: ['Available', 'Booked', 'Out of Service'],
