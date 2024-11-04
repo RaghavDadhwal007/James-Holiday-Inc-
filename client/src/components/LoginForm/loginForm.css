@@ -5,7 +5,7 @@
     box-sizing: border-box;
   }
   
-  .register-container {
+  .login-container {
     height: 100vh;
     display: flex;
     align-items: center;
@@ -14,7 +14,7 @@
     padding: 20px;
   }
   
-  .register-box {
+  .login-box {
     display: flex;
     width: 100%;
     max-width: 1000px;
@@ -26,7 +26,7 @@
   }
   
   /* Left Side (Welcome Section) */
-  .register-left {
+  .login-left {
     width: 40%;
     position: relative;
     background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945');
@@ -81,36 +81,39 @@
   }
   
   /* Right Side (Form Section) */
-  .register-right {
+  .login-right {
     width: 60%;
     padding: 40px;
     display: flex;
     flex-direction: column;
   }
   
-  .register-right h1 {
-    font-size: 2rem;
-    color: #333;
-    margin-bottom: 30px;
+  .login-header {
     text-align: center;
+    margin-bottom: 30px;
   }
   
-  .register-form {
+  .login-header h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .login-header p {
+    color: #666;
+    font-size: 1.1rem;
+  }
+  
+  .login-form {
     display: flex;
     flex-direction: column;
     gap: 20px;
-  }
-  
-  .form-row {
-    display: flex;
-    gap: 20px;
+    max-width: 400px;
+    margin: 0 auto;
+    width: 100%;
   }
   
   .input-group {
-    flex: 1;
-  }
-  
-  .input-group.full-width {
     width: 100%;
   }
   
@@ -128,7 +131,7 @@
   
   .input-wrapper input {
     width: 100%;
-    padding: 12px 15px 12px 45px;
+    padding: 15px 15px 15px 45px;
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 1rem;
@@ -141,14 +144,33 @@
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
   }
   
-  .error-message {
-    color: #dc3545;
-    text-align: center;
-    margin-top: -10px;
+  .form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: 0.9rem;
+    color: #666;
   }
   
-  .register-button {
+  .remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  
+  .forgot-password {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .forgot-password:hover {
+    color: #0056b3;
+    text-decoration: underline;
+  }
+  
+  .login-button {
     background: #007bff;
     color: white;
     border: none;
@@ -158,34 +180,41 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: 10px;
   }
   
-  .register-button:hover {
+  .login-button:hover {
     background: #0056b3;
     transform: translateY(-2px);
   }
   
-  .register-button.loading {
+  .login-button.loading {
     opacity: 0.8;
     cursor: not-allowed;
   }
   
-  .login-link {
+  .register-link {
     text-align: center;
-    margin-top: 20px;
     color: #666;
   }
   
-  .login-link a {
+  .register-link a {
     color: #007bff;
     text-decoration: none;
     font-weight: 500;
     margin-left: 5px;
   }
   
-  .login-link a:hover {
+  .register-link a:hover {
     text-decoration: underline;
+  }
+  
+  .error-message {
+    background: #dc3545;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    text-align: center;
   }
   
   /* Loading Animation */
@@ -205,36 +234,6 @@
     animation: spin 1s linear infinite;
   }
   
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .register-box {
-      flex-direction: column;
-      height: auto;
-    }
-  
-    .register-left {
-      width: 100%;
-      min-height: 200px;
-    }
-  
-    .register-right {
-      width: 100%;
-    }
-  
-    .form-row {
-      flex-direction: column;
-      gap: 15px;
-    }
-  
-    .welcome-content {
-      padding: 30px;
-    }
-  
-    .welcome-content h2 {
-      font-size: 1.8rem;
-    }
-  }
-  
   /* Animations */
   @keyframes fadeIn {
     from {
@@ -247,6 +246,31 @@
     }
   }
   
-  .register-box {
+  .login-box {
     animation: fadeIn 0.5s ease-out;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .login-box {
+      flex-direction: column;
+      height: auto;
+    }
+  
+    .login-left {
+      width: 100%;
+      min-height: 200px;
+    }
+  
+    .login-right {
+      width: 100%;
+    }
+  
+    .welcome-content {
+      padding: 30px;
+    }
+  
+    .welcome-content h2 {
+      font-size: 1.8rem;
+    }
   }
