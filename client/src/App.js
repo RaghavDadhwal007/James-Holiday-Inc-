@@ -4,6 +4,13 @@ import LoginForm from './components/LoginForm';
 import ForgotPassword from "./components/ForgotPassword";
 import UserVerification from './components/UserVerification';
 import ResetPassword from './components/ResetPassword';
+import UserProfile from './components/UserProfile';
+import HomePage from './components/HomePage';
+import BookingForm from './components/BookingForm';
+import MyBookings from './components/MyBookings';
+import RoomsList from './components/RoomsList';
+import RoomDetails from './components/RoomDetails';
+import Payment from './components/Payment';
 import './App.css';
 
 function App() {
@@ -11,11 +18,19 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/" element={<RegistrationForm />} />
+          <Route path="/register" element={<RegistrationForm />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/verify/:token" element={<UserVerification />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
+
+          <Route path="/userprofile" element={<UserProfile />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/bookingForm" element={<BookingForm />} />
+          <Route path="/myBookings" element={<MyBookings />} />
+          <Route path="/roomsList" element={<RoomsList />} />
+          <Route path="/roomDetails" element={<RoomDetails />} />
+          <Route path="/payment" element={<Payment />} />
         </Routes>
       </div>
     </Router>
