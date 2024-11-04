@@ -29,7 +29,7 @@ function App() {
           <Route path="/bookingForm" element={<BookingForm />} />
           <Route path="/myBookings" element={<MyBookings />} />
           <Route path="/roomsList" element={<RoomsList />} />
-          <Route path="/roomDetails" element={<RoomDetails />} />
+          <Route path="/roomDetails/:id" element={<RoomDetails />} />
           <Route path="/payment" element={<Payment />} />
         </Routes>
       </div>
