@@ -20,7 +20,7 @@ exports.registerUser = async (req, res) => {
   try {
       let user = await User.findOne({ email });
       if (user) {
-          return res.status(400).json({ message: 'User already exists' });
+          return res.status(400).json({ success: false, message: 'User already exists' });
       }
 
       user = new User({ name, email, password: await bcrypt.hash(password, 10), phone });
@@ -37,10 +37,10 @@ exports.registerUser = async (req, res) => {
       transporter.sendMail(mailOptions, async (error) => {
           if (error) {
               console.error('Error sending welcome email:', error);
-              return res.status(500).json({ message: 'User registered but email not sent' });
+              return res.status(500).json({ success: false, message: 'User registered but email not sent' });
           }
         await user.save();
-        res.json({ token, message: 'User registered successfully and welcome email sent' });
+        res.json({ success: true, message: 'User registered successfully and welcome email sent' });
       });
   } catch (error) {
       console.error(error);
@@ -55,16 +55,16 @@ exports.verifyUser = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await User.findById(decoded.userId);
-    if (!user) return res.status(400).json({ message: "User not found" });
+    if (!user) return res.status(400).json({ success: false, message: "User not found" });
 
     if (user.isVerified) {
-      return res.status(400).json({ message: "User already verified" });
+      return res.status(400).json({ success: false, message: "User already verified" });
     }
 
     user.isVerified = true;
     await user.save();
 
-    res.status(200).json({ message: "User verified successfully" });
+    res.status(200).json({ success: true, message: "User verified successfully" });
 
   } catch (error) {
       console.error(error);
@@ -77,20 +77,20 @@ exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "User not found" });
+    if (!user) return res.status(400).json({ success: false, message: "User not found" });
 
     if (!user.isVerified) {
-      return res.status(400).json({ message: "User not verified. Please check your email for verification link." });
+      return res.status(400).json({ success: false, message: "User not verified. Please check your email for verification link." });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+    if (!isMatch) return res.status(400).json({ success:false, message: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET, { expiresIn: "5h" });
 
-    res.status(200).json({ token, message: "Login successful" });
+    res.status(200).json({ success: true, token, message: "Login successful" });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, message: err.message });
   }
 }
 

@@ -120,12 +120,6 @@
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
 }
 
-.error-message-bf {
-  color: #dc3545;
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-}
-
 /* Form Actions */
 .form-actions {
   display: flex;
@@ -490,10 +484,5 @@ a:focus {
   .submit-btn {
     background: #000;
     color: #fff;
-  }
-
-  .error-message--bf {
-    color: #000;
-    font-weight: bold;
   }
 }

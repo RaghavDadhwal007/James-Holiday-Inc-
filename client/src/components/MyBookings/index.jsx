@@ -1,55 +1,185 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import "../HomePage/homePage.css";
-import "./myBookings.css";
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import './myBookings.css';
 
-function MyBookings() {
+const MyBookings = () => {
+  const [activeTab, setActiveTab] = useState('upcoming');
+  
+  // Sample data - Replace with your actual data
   const bookings = [
     {
-      id: 1,
-      roomType: "Deluxe",
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-9adA4eaOlSpe_LJEKzxGJjigLJtjGs8ATg&s",
-      checkIn: "2023-09-15",
-      checkOut: "2023-09-20",
-      price: "$1000",
+      id: "B001",
+      roomType: "Deluxe Suite",
+      checkIn: "2024-03-15",
+      checkOut: "2024-03-18",
+      guests: 2,
+      totalAmount: 599,
+      status: "upcoming",
+      roomImage: "/api/placeholder/400/300"
     },
     {
-      id: 2,
-      roomType: "Luxury Suite",
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD6Kn6DuellFmvWWhJAmHXTedcQTEyJP8wgg&s",
-      checkIn: "2023-08-10",
-      checkOut: "2023-08-15",
-      price: "$1750",
+      id: "B002",
+      roomType: "Presidential Suite",
+      checkIn: "2024-02-20",
+      checkOut: "2024-02-22",
+      guests: 3,
+      totalAmount: 899,
+      status: "completed",
+      roomImage: "/api/placeholder/400/300"
     },
     {
-      id: 3,
-      roomType: "Family",
-      image: "https://www.landmarklondon.co.uk/wp-content/uploads/2019/05/Executive-Family-1800x1200-1.jpg",
-      checkIn: "2023-07-05",
-      checkOut: "2023-07-10",
-      price: "$1250",
-    },
+      id: "B003",
+      roomType: "Ocean View Room",
+      checkIn: "2024-04-05",
+      checkOut: "2024-04-08",
+      guests: 2,
+      totalAmount: 459,
+      status: "upcoming",
+      roomImage: "/api/placeholder/400/300"
+    }
   ];
 
-  return (
-    <section className="booking-cards">
-      <h1>My Bookings</h1>
-      {bookings.map((booking) => (
-        <div className="booking-card" key={booking.id}>
-          <img src={booking.image} alt={booking.roomType} />
-          <div className="info">
-            <h3>{booking.roomType}</h3>
-            <p>Check-in: {booking.checkIn}</p>
-            <p>Check-out: {booking.checkOut}</p>
-            <p>Total Price: {booking.price}</p>
-          </div>
-          <Link to={`/roomdetails/${booking.roomType}`} className="view-details-btn">
-            Book Again
-          </Link>
-        </div>
-      ))}
-    </section>
+  const filteredBookings = bookings.filter(booking => 
+    activeTab === 'all' || booking.status === activeTab
   );
-}
+
+  const getStatusColor = (status) => {
+    switch(status) {
+      case 'upcoming':
+        return 'status-upcoming';
+      case 'completed':
+        return 'status-completed';
+      case 'cancelled':
+        return 'status-cancelled';
+      default:
+        return '';
+    }
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  };
+
+  const calculateNights = (checkIn, checkOut) => {
+    const start = new Date(checkIn);
+    const end = new Date(checkOut);
+    const nights = (end - start) / (1000 * 60 * 60 * 24);
+    return nights;
+  };
+
+  return (
+    <div className="mybookings-container">
+      <div className="mybookings-header">
+        <h1>My Bookings</h1>
+        <p>Manage and view your bookings</p>
+      </div>
+
+      <div className="booking-tabs">
+        <button 
+          className={`tab-btn ${activeTab === 'all' ? 'active' : ''}`}
+          onClick={() => setActiveTab('all')}
+        >
+          All Bookings
+        </button>
+        <button 
+          className={`tab-btn ${activeTab === 'upcoming' ? 'active' : ''}`}
+          onClick={() => setActiveTab('upcoming')}
+        >
+          Upcoming
+        </button>
+        <button 
+          className={`tab-btn ${activeTab === 'completed' ? 'active' : ''}`}
+          onClick={() => setActiveTab('completed')}
+        >
+          Completed
+        </button>
+        <button 
+          className={`tab-btn ${activeTab === 'cancelled' ? 'active' : ''}`}
+          onClick={() => setActiveTab('cancelled')}
+        >
+          Cancelled
+        </button>
+      </div>
+
+      <div className="bookings-grid">
+        {filteredBookings.length === 0 ? (
+          <div className="no-bookings">
+            <span className="no-bookings-icon">🏠</span>
+            <h3>No bookings found</h3>
+            <p>You haven't made any {activeTab} bookings yet</p>
+            <Link to="/rooms" className="browse-rooms-btn">Browse Rooms</Link>
+          </div>
+        ) : (
+          filteredBookings.map(booking => (
+            <div key={booking.id} className="booking-card">
+              <div className="booking-image">
+                <img src={booking.roomImage} alt={booking.roomType} />
+                <span className={`booking-status ${getStatusColor(booking.status)}`}>
+                  {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                </span>
+              </div>
+
+              <div className="booking-details">
+                <div className="booking-header">
+                  <h3>{booking.roomType}</h3>
+                  <span className="booking-id">Booking ID: {booking.id}</span>
+                </div>
+
+                <div className="stay-details">
+                  <div className="stay-item">
+                    <span className="stay-label">Check-in</span>
+                    <span className="stay-value">{formatDate(booking.checkIn)}</span>
+                  </div>
+                  <div className="stay-item">
+                    <span className="stay-label">Check-out</span>
+                    <span className="stay-value">{formatDate(booking.checkOut)}</span>
+                  </div>
+                  <div className="stay-item">
+                    <span className="stay-label">Guests</span>
+                    <span className="stay-value">{booking.guests} Person(s)</span>
+                  </div>
+                  <div className="stay-item">
+                    <span className="stay-label">Duration</span>
+                    <span className="stay-value">
+                      {calculateNights(booking.checkIn, booking.checkOut)} Night(s)
+                    </span>
+                  </div>
+                </div>
+
+                <div className="booking-footer">
+                  <div className="price-info">
+                    <span className="price-label">Total Amount</span>
+                    <span className="price-value">${booking.totalAmount}</span>
+                  </div>
+                  
+                  <div className="booking-actions">
+                    {booking.status === 'upcoming' && (
+                      <>
+                        <button className="action-btn modify-btn">
+                          Modify
+                        </button>
+                        <button className="action-btn cancel-btn">
+                          Cancel
+                        </button>
+                      </>
+                    )}
+                    <button className="action-btn view-btn">
+                      View Details
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+};
 
 export default MyBookings;

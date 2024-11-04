@@ -11,6 +11,7 @@ import MyBookings from './components/MyBookings';
 import RoomsList from './components/RoomsList';
 import RoomDetails from './components/RoomDetails';
 import Payment from './components/Payment';
+import AdminDashboard from './components/AdminDashboard';
 import './App.css';
 
 function App() {
@@ -31,6 +32,8 @@ function App() {
           <Route path="/roomsList" element={<RoomsList />} />
           <Route path="/roomDetails" element={<RoomDetails />} />
           <Route path="/payment" element={<Payment />} />
+          <Route path="/AdminDashboard" element={<AdminDashboard />} />
+
         </Routes>
       </div>
     </Router>

@@ -14,7 +14,7 @@ const UserVerification = () => {
         });
 
         const result = await response.json();
-        if (response.ok) {
+        if (result.success) {
           setStatus('Verification successful! Redirecting to login...');
           setTimeout(() => {
             navigate('/login'); // Redirect to login after a short delay
@@ -28,7 +28,7 @@ const UserVerification = () => {
     };
 
     verifyUser();
-  }, [token, navigate]);
+  }, []);
 
   return (
     <div className="container">

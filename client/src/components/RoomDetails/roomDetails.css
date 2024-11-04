@@ -1,45 +1,461 @@
-.carousel {
-    position: relative;
-    max-width: 600px;
-    margin: auto;
-    overflow: hidden;
-    border-radius: 10px;
-  }
-
-  .slides {
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-  }
-
-  .slide {
-    min-width: 100%;
-    box-sizing: border-box;
-  }
-
-  .carousel img {
-    width: 100%;
-    height: auto;
-  }
-p{
+/* Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+ }
+ 
+ .rd-page {
+  background-color: #f8f9fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: #333;
+ }
+ 
+ /* Navbar */
+ .rd-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+ }
+ 
+ .rd-navbar-transparent {
+  background: transparent;
+  padding: 1.5rem 2rem;
+ }
+ 
+ .rd-navbar-scrolled {
+  background: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+ }
+ 
+ .rd-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+ }
+ 
+ .rd-logo-image {
+  height: 40px;
+  width: auto;
+ }
+ 
+ .rd-company-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+  transition: color 0.3s ease;
+ }
+ 
+ .rd-navbar-transparent .rd-company-name {
+  color: white;
+ }
+ 
+ .rd-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+ }
+ 
+ .rd-nav-links a {
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  color: #333;
+ }
+ 
+ .rd-navbar-transparent .rd-nav-links a {
+  color: white;
+ }
+ 
+ .rd-sign-out {
+  padding: 0.5rem 1.5rem;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+ }
+ 
+ .rd-sign-out-transparent {
+  background: rgba(255,255,255,0.2);
+  color: white !important;
+  backdrop-filter: blur(5px);
+ }
+ 
+ .rd-sign-out-scrolled {
+  background: #007bff;
+  color: white !important;
+ }
+ 
+ /* Hero Section */
+ .rd-hero {
+  position: relative;
+  height: 80vh;
+  overflow: hidden;
+  margin-top: 0;
+ }
+ 
+ .rd-carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+ }
+ 
+ .rd-slides {
+  display: flex;
+  height: 100%;
+  transition: transform 0.5s ease;
+ }
+ 
+ .rd-slide {
+  flex: 0 0 100%;
+  height: 100%;
+ }
+ 
+ .rd-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+ }
+ 
+ .rd-carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  padding: 1rem;
+  cursor: pointer;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 2;
+ }
+ 
+ .rd-carousel-btn:hover {
+  background: rgba(0,0,0,0.8);
+  transform: translateY(-50%) scale(1.1);
+ }
+ 
+ .rd-prev {
+  left: 2rem;
+ }
+ 
+ .rd-next {
+  right: 2rem;
+ }
+ 
+ .rd-carousel-dots {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 2;
+ }
+ 
+ .rd-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+ }
+ 
+ .rd-dot.active {
+  background: white;
+  transform: scale(1.2);
+ }
+ 
+ /* Room Info Section */
+ .rd-info-section {
+  margin-top: -4rem;
+  position: relative;
+  z-index: 2;
+  padding: 0 2rem 4rem;
+ }
+ 
+ .rd-info-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+ }
+ 
+ .rd-main-info {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+ }
+ 
+ .rd-main-info h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #333;
+ }
+ 
+ .rd-description {
+  color: #666;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+ }
+ 
+ .rd-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+ }
+ 
+ .rd-feature {
   text-align: center;
-}
-
-
-
-
-  /* Navigation buttons */
-  .prev, .next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 24px;
-    color: #333;
-    cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.7);
-    padding: 8px;
-    border-radius: 50%;
-    user-select: none;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+ }
+ 
+ .rd-feature:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+ }
+ 
+ .rd-feature-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  display: block;
+ }
+ 
+ .rd-feature-label {
+  display: block;
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+ }
+ 
+ .rd-feature-value {
+  font-weight: 600;
+  color: #333;
+  font-size: 1.1rem;
+ }
+ 
+ /* Booking Card */
+ .rd-booking-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 2rem;
+  height: fit-content;
+ }
+ 
+ .rd-price-info {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+ }
+ 
+ .rd-price {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #007bff;
+ }
+ 
+ .rd-per-night {
+  color: #666;
+  margin-left: 0.5rem;
+  font-size: 1.1rem;
+ }
+ 
+ .rd-booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+ }
+ 
+ .rd-date-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+ }
+ 
+ .rd-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+ }
+ 
+ .rd-input-group label {
+  font-weight: 500;
+  color: #333;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+ }
+ 
+ .rd-input-group input,
+ .rd-input-group select {
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+ }
+ 
+ .rd-input-group input:focus,
+ .rd-input-group select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0,123,255,0.25);
+ }
+ 
+ .rd-book-now {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+ }
+ 
+ .rd-book-now:hover {
+  background: #0056b3;
+  transform: translateY(-2px);
+ }
+ 
+ /* Amenities */
+ .rd-amenities {
+  max-width: 1200px;
+  margin: 4rem auto 0;
+ }
+ 
+ .rd-amenities h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+ }
+ 
+ .rd-amenities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+ }
+ 
+ .rd-amenity-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  transition: all 0.3s ease;
+ }
+ 
+ .rd-amenity-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+ }
+ 
+ .rd-amenity-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: block;
+ }
+ 
+ .rd-amenity-card h3 {
+  margin-bottom: 0.5rem;
+  color: #333;
+ }
+ 
+ .rd-amenity-card p {
+  color: #666;
+  font-size: 0.9rem;
+ }
+ 
+ /* Responsive Design */
+ @media (max-width: 1024px) {
+  .rd-info-container {
+    grid-template-columns: 1fr;
   }
-
-  .prev { left: 10px; }
-  .next { right: 10px; }
+ 
+  .rd-booking-card {
+    position: static;
+    margin-top: 2rem;
+  }
+ }
+ 
+ @media (max-width: 768px) {
+  .rd-navbar {
+    padding: 1rem;
+  }
+ 
+  .rd-nav-links {
+    display: none;
+  }
+ 
+  .rd-hero {
+    height: 60vh;
+  }
+ 
+  .rd-carousel-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+ 
+  .rd-main-info h1 {
+    font-size: 2rem;
+  }
+ 
+  .rd-features {
+    grid-template-columns: 1fr 1fr;
+  }
+ 
+  .rd-date-inputs {
+    grid-template-columns: 1fr;
+  }
+ 
+  .rd-amenities-grid {
+    grid-template-columns: 1fr;
+  }
+ }
+ 
+ /* Animations */
+ @keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+ }
+ 
+ /* Focus States */
+ .rd-carousel-btn:focus,
+ .rd-dot:focus,
+ .rd-input-group input:focus,
+ .rd-input-group select:focus,
+ .rd-book-now:focus {
+  outline: 3px solid rgba(0,123,255,0.25);
+  outline-offset: 2px;
+ }

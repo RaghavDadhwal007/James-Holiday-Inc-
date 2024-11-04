@@ -1,75 +1,192 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import '../HomePage/homePage.css';
+import './roomsList.css';
+import Header from '../Header';
 
 const RoomsList = () => {
+  const [roomsData, setRoomsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState({
+    checkIn: '',
+    checkOut: '',
+    guests: '',
+    roomType: ''
+  });
+
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URI}/rooms`);
+        const data = await response.json();
+        setRoomsData(data);
+      } catch (error) {
+        console.error('Error fetching featured rooms:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchRooms();
+   }, []);
+
+  const rooms = [
+    {
+      title: 'Deluxe Room',
+      price: 200,
+      imgSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-9adA4eaOlSpe_LJEKzxGJjigLJtjGs8ATg&s',
+      link: '/roomdetails/Deluxe',
+      amenities: ['Free Wi-Fi', 'Ocean View', 'Mini Bar', 'Room Service'],
+      size: '45 m²',
+      maxGuests: 2
+    },
+    {
+      title: 'Luxury Suite',
+      price: 350,
+      imgSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD6Kn6DuellFmvWWhJAmHXTedcQTEyJP8wgg&s',
+      link: '/roomdetails/LuxurySuite',
+      amenities: ['Free Wi-Fi', 'Ocean View', 'Mini Bar', 'Room Service', 'Jacuzzi'],
+      size: '75 m²',
+      maxGuests: 4
+    },
+    {
+      title: 'Luxury Suite',
+      price: 350,
+      imgSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD6Kn6DuellFmvWWhJAmHXTedcQTEyJP8wgg&s',
+      link: '/roomdetails/LuxurySuite',
+      amenities: ['Free Wi-Fi', 'Ocean View', 'Mini Bar', 'Room Service', 'Jacuzzi'],
+      size: '75 m²',
+      maxGuests: 4
+    },
+    {
+      title: 'Luxury Suite',
+      price: 350,
+      imgSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD6Kn6DuellFmvWWhJAmHXTedcQTEyJP8wgg&s',
+      link: '/roomdetails/LuxurySuite',
+      amenities: ['Free Wi-Fi', 'Ocean View', 'Mini Bar', 'Room Service', 'Jacuzzi'],
+      size: '75 m²',
+      maxGuests: 4
+    },
+    // ... Add similar detailed objects for other rooms
+  ];
+
   return (
-    <div>
-      <header className="header">
-        <nav className="navbar">
-          <div className="logo">
-            <img
-              src="https://png.pngtree.com/png-vector/20220419/ourmid/pngtree-vector-template-for-innovative-jh-letter-logo-design-with-linked-initials-vector-png-image_30077126.png"
-              alt="Hotel Logo"
-              className="logo-image"
-            />
-            <h1 className="company-name">James Holiday Inc.</h1>
-          </div>
-          <ul className="nav-links">
-            <li><Link to="/home">Home</Link></li>
-            <li><Link to="/rooms">Rooms</Link></li>
-            <li><Link to="/mybookings">My Bookings</Link></li>
-            <li><Link to="/userprofile">My Profile</Link></li>
-            <li><Link to="/contactus">Contact Us</Link></li>
-            <li><Link to="/" className="sign-out">Sign-Out</Link></li>
-          </ul>
-        </nav>
-        <h1>Available Rooms</h1>
-      </header>
+    <div className="rooms-page">
+      {/* Navbar */}
+      <Header />
 
-      <div className="search-bar">
-        <input type="date" placeholder="Check-in Date" />
-        <input type="date" placeholder="Check-out Date" />
-        <input type="number" placeholder="Guests" min="1" />
-        <select>
-          <option value="">Room Type</option>
-          <option value="single">Single Room</option>
-          <option value="double">Double Room</option>
-          <option value="suite">Suite</option>
-        </select>
-        <button className="search-btn">Check Availability</button>
-      </div>
 
-      <section className="rooms">
-        <div className="room-cards">
-          {[
-            { title: 'Deluxe Room', price: '$200 / night', imgSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-9adA4eaOlSpe_LJEKzxGJjigLJtjGs8ATg&s', link: '/roomdetails/Deluxe' },
-            { title: 'Luxury Suite', price: '$350 / night', imgSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD6Kn6DuellFmvWWhJAmHXTedcQTEyJP8wgg&s', link: '/roomdetails/LuxurySuite' },
-            { title: 'Family Room', price: '$250 / night', imgSrc: 'https://www.landmarklondon.co.uk/wp-content/uploads/2019/05/Executive-Family-1800x1200-1.jpg', link: '/roomdetails/Family' },
-            { title: 'Single Room', price: '$120 / night', imgSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFGJOI1ugVJ4Zr-KGvNipsz6ObhM1FW4DVlw&s', link: '/roomdetails/Single' },
-            { title: 'Double Room', price: '$180 / night', imgSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSf9bvFSwblzobz_rpZpN9LNxZoCliyi5eZPA&s', link: '/roomdetails/Double' },
-            { title: 'Executive Suite', price: '$400 / night', imgSrc: 'https://wedgewoodhotel.com/wp-content/uploads/2023/04/Wedgewood_Hotel_123-1680x0-c-default.jpg', link: '/roomdetails/ExecutiveSuite' },
-            { title: 'Presidential Suite', price: '$600 / night', imgSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLu8FCt2KR1G5sKLj-3k-eiHOGpndItlH6Cw&s', link: '/roomdetails/PresidentialSuite' },
-            { title: 'Ocean View Room', price: '$220 / night', imgSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQU8wtCeoV6WwgF7AxMZ7Pb1WbRtWcSnaXY0g&s', link: '/roomdetails/OceanView' },
-            { title: 'Garden Room', price: '$210 / night', imgSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPrr25hTNkdaFCMtAkm0D2uX_MDXIE7cQjnw&s', link: '/roomdetails/Garden' },
-            { title: 'Penthouse', price: '$700 / night', imgSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyccCrDBKZUHtMlIUY5blLeWdFppiPrD9oCg&s', link: '/roomdetails/Penthouse' }
-          ].map((room, index) => (
-            <div key={index} className="room-card">
-              <img src={room.imgSrc} alt={room.title} />
-              <h3>{room.title}</h3>
-              <p>{room.price}</p>
-              <Link to={room.link} className="view-details-btn">View Details</Link>
-            </div>
-          ))}
+      {/* Hero Section */}
+      <section className="rooms-hero">
+        <div className="hero-content">
+          <h1>Discover Our Rooms</h1>
+          <p>Experience luxury and comfort in our carefully designed accommodations</p>
         </div>
       </section>
 
+      {/* Search Section */}
+      <section className="search-section">
+        <div className="search-container">
+          <div className="search-input">
+            <span className="input-icon">📅</span>
+            <input
+              type="date"
+              value={filters.checkIn}
+              onChange={(e) => setFilters({...filters, checkIn: e.target.value})}
+              placeholder="Check-in Date"
+            />
+          </div>
+          
+          <div className="search-input">
+            <span className="input-icon">📅</span>
+            <input
+              type="date"
+              value={filters.checkOut}
+              onChange={(e) => setFilters({...filters, checkOut: e.target.value})}
+              placeholder="Check-out Date"
+            />
+          </div>
+          
+          <div className="search-input">
+            <span className="input-icon">👥</span>
+            <input
+              type="number"
+              value={filters.guests}
+              onChange={(e) => setFilters({...filters, guests: e.target.value})}
+              min="1"
+              placeholder="Guests"
+            />
+          </div>
+          
+          <div className="search-input">
+            <span className="input-icon">🏨</span>
+            <select
+              value={filters.roomType}
+              onChange={(e) => setFilters({...filters, roomType: e.target.value})}
+            >
+              <option value="">Room Type</option>
+              <option value="single">Single Room</option>
+              <option value="double">Double Room</option>
+              <option value="suite">Suite</option>
+            </select>
+          </div>
+          
+          <button className="search-button">
+            <span>🔍</span> Search Rooms
+          </button>
+        </div>
+      </section>
+
+      {/* Rooms Grid */}
+      {loading ? (
+          <p>Loading featured rooms...</p>
+        ) : (
+      <section className="rooms-grid">
+        {roomsData.map((room, index) => (
+          <div key={room._id} className="room-card">
+            <div className="room-image">
+              <img src={room.imgSrc} alt={room.room_type.type} />
+              <div className="room-price">${room.price.$numberDecimal}<span>/night</span></div>
+            </div>
+            <div className="room-info">
+              <h3>{room.room_type.type}</h3>
+              <div className="room-details">
+                <span>📏 {room.size}</span>
+                <span>👥 Up to {room.capacity} guests</span>
+              </div>
+              <div className="room-amenities">
+                <span className="amenity-tag">✓ {room.amenities}</span>
+              </div>
+              <div className="room-actions">
+                <Link to={`/roomDetails/${room._id}`} className="view-details-btn">View Details</Link>
+                <Link to="/bookingForm" className="book-now-btn"></Link>
+              </div>
+            </div>
+          </div>
+        ))}
+      </section>
+        )}
+      {/* Footer */}
       <footer className="footer">
-        <p>&copy; 2024 James Holiday Inc. All rights reserved.</p>
-        <ul className="quick-links">
-          <li><Link to="/terms">Terms of Service</Link></li>
-          <li><Link to="/privacy">Privacy Policy</Link></li>
-        </ul>
+        <div className="footer-content">
+          <div className="footer-section">
+            <h3>James Holiday Inc.</h3>
+            <p>Experience luxury and comfort</p>
+          </div>
+          <div className="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+              <li><Link to="/terms">Terms of Service</Link></li>
+              <li><Link to="/privacy">Privacy Policy</Link></li>
+              <li><Link to="/faq">FAQs</Link></li>
+              <p className="footer-section">&copy; 2024 James Holiday Inc. All rights reserved.</p>
+            </ul>
+          </div>
+          <div className="footer-section">
+            <h3>Contact</h3>
+            <p>📞 +1 234 567 890</p>
+            <p>📧 info@jamesholiday.com</p>
+          </div>
+        </div>
       </footer>
     </div>
   );
