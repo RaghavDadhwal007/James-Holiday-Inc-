@@ -11,6 +11,10 @@ function RoomDetails() {
   const [loading, setLoading] = useState(true);
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
+  const [nights, setNights] = useState(0);
+  const [roomRate, setRoomRate] = useState(0);
+  const [taxes, setTaxes] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
 
   useEffect(() => {
     const fetchFeaturedRooms = async () => {
@@ -87,14 +91,43 @@ function RoomDetails() {
     ],
   };
 
+  const handleChange = (e) => {
+    if (e.target.name === "checkIn") {
+      setCheckIn(e.target.value);
+    } else {
+      setCheckOut(e.target.value);
+    }
+
+    // Calculate nights and amounts if both dates are set
+    if (
+      (checkIn && e.target.name === "checkOut") ||
+      (checkOut && e.target.name === "checkIn")
+    ) {
+      const date1 = new Date(
+        e.target.name === "checkIn" ? e.target.value : checkIn
+      );
+      const date2 = new Date(
+        e.target.name === "checkOut" ? e.target.value : checkOut
+      );
+      const differenceInMs = date2 - date1;
+      const nightsCount = differenceInMs / (1000 * 60 * 60 * 24);
+
+      if (nightsCount > 0) {
+        const rate = nightsCount * roomDetailsData.price.$numberDecimal;
+        const taxAmount = rate * 0.13;
+        const total = rate + taxAmount;
+
+        setNights(nightsCount);
+        setRoomRate(rate);
+        setTaxes(taxAmount);
+        setTotalAmount(total);
+      }
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const date1 = new Date(checkIn);
-    const date2 = new Date(checkOut);
-    const differenceInMs = date2 - date1;
 
-    const differenceInDays = differenceInMs / (1000 * 60 * 60 * 24);
-    const amount = differenceInDays * roomDetailsData.price.$numberDecimal;
     const stripe = await loadStripe(
       "pk_test_51QH8UhDVCApEbmXH0V05yN5isrK6roHA6ix4SyzpaxA1cWrfhPJSkWCI3fuTImeCVCgfjBCBkOn2i1ysZBov9vc500rvVtvsjX"
     );
@@ -105,21 +138,12 @@ function RoomDetails() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ amount: amount * 100 }),
+        body: JSON.stringify({ amount: totalAmount * 100 }), // Convert to cents for Stripe
       }
     );
     const session = await response.json();
 
     await stripe.redirectToCheckout({ sessionId: session.id });
-  };
-
-  const handleChange = (e) => {
-    console.log(e.target.name, "e.target.value[", e.target.value);
-    if (e.target.name === "checkIn") {
-      setCheckIn(e.target.value);
-    } else {
-      setCheckOut(e.target.value);
-    }
   };
 
   return (
@@ -229,6 +253,22 @@ function RoomDetails() {
                       />
                     </div>
                   </div>
+
+                  <div className="rd-price-breakdown">
+                    <div className="rd-price-item">
+                      <span>Room Rate ({nights} Nights)</span>
+                      <span>${roomRate.toFixed(2)}</span>
+                    </div>
+                    <div className="rd-price-item">
+                      <span>Taxes (13%)</span>
+                      <span>${taxes.toFixed(2)}</span>
+                    </div>
+                    <div className="rd-price-item total">
+                      <span>Total Amount</span>
+                      <span>${totalAmount.toFixed(2)}</span>
+                    </div>
+                  </div>
+
                   <button
                     type="submit"
                     className="rd-book-now"
