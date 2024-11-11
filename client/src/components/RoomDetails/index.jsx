@@ -98,7 +98,6 @@ function RoomDetails() {
       setCheckOut(e.target.value);
     }
 
-    // Calculate nights and amounts if both dates are set
     if (
       (checkIn && e.target.name === "checkOut") ||
       (checkOut && e.target.name === "checkIn")
