@@ -71,7 +71,6 @@ exports.confirmPayment = async (req, res) => {
       res.status(400).json({ success: false, message: "Payment not completed" });
     }
   } catch (error) {
-    console.error("Error confirming payment:", error);
     res.status(500).json({ success: false, message: "Error confirming payment" });
   }
 };
