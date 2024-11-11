@@ -7,6 +7,7 @@ exports.createRoom = async (req, res) => {
     await room.save();
     res.status(201).json(room);
   } catch (error) {
+    console.log("error", error)
     res.status(500).json({ error: 'Error creating room' });
   }
 };
