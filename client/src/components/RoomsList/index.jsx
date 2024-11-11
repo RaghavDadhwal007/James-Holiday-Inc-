@@ -29,7 +29,6 @@ const RoomsList = () => {
         setRoomsData(data);
         setRoomTypeData(typeData);
       } catch (error) {
-        console.error("Error fetching featured rooms:", error);
       } finally {
         setLoading(false);
       }
