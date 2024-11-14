@@ -27,12 +27,12 @@ exports.payment = async (req, res) => {
     booking.payment_id = payment._id;
     await booking.save();
 
-    const { amount } = req.body;
+    // const { amount } = req.body;
     const stripeData = {
       price_data:{
         currency: "cad",
         product_data: { name: 'Room' },
-        unit_amount: amount
+        unit_amount: total_amount * 100
       },
       quantity: 1
     }
@@ -42,6 +42,9 @@ exports.payment = async (req, res) => {
       mode:"payment",
       success_url: `${process.env.CLIENT_URI}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.CLIENT_URI}/failed`,
+      metadata: {
+        booking_id: booking._id.toString()
+      }
     })
     res.status(200).json({ id: session.id });
   } catch (error) {
@@ -58,6 +61,7 @@ exports.confirmPayment = async (req, res) => {
 
     if (session.payment_status === "paid") {
       const bookingId = session.metadata.booking_id;
+      console.log(session, 'bookingId', bookingId)
 
       await Payment.findOneAndUpdate(
         { booking_id: bookingId },

@@ -1,132 +1,171 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./roomsList.css";
 import Header from "../Header";
+import Footer from "../Footer";
+
+// Utility function to parse search parameters
+const parseSearchParams = (search) => {
+  const searchParams = new URLSearchParams(search);
+  return {
+    checkIn: searchParams.get("checkIn") || "",
+    checkOut: searchParams.get("checkOut") || "",
+    capacity: searchParams.get("capacity") || "",
+    roomType: "",
+    status: searchParams.get("status") || "Available",
+  };
+};
+
+// Utility function to get today's date in YYYY-MM-DD format
+const getTodayDate = () => {
+  return new Date().toISOString().split("T")[0];
+};
+
+// Utility function to get room type image
+const getRoomTypeImage = (roomType) => {
+  return `${process.env.REACT_APP_SERVER_URI}` + roomType.images[0].url;
+  if (roomType?.images?.length > 0) {
+    const primaryImage =
+      roomType.images.find((img) => img.isPrimary) || roomType.images[0];
+    return `${process.env.REACT_APP_SERVER_URI}${primaryImage.url}`;
+  }
+  return "";
+};
 
 const RoomsList = () => {
+  const location = useLocation();
   const [roomsData, setRoomsData] = useState([]);
   const [roomTypeData, setRoomTypeData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({
-    checkIn: "",
-    checkOut: "",
-    capacity: "",
-    roomType: "",
-    roomTypeID: "",
-  });
+  const [error, setError] = useState(null);
+  const [filters, setFilters] = useState(() =>
+    parseSearchParams(location.search)
+  );
 
   useEffect(() => {
-    const fetchRooms = async () => {
+    const fetchInitialData = async () => {
       try {
-        const response = await fetch(
-          `${process.env.REACT_APP_SERVER_URI}/rooms`
-        );
-        const responseData = await fetch(
+        setLoading(true);
+        setError(null);
+
+        // Fetch room types
+        const roomTypesResponse = await fetch(
           `${process.env.REACT_APP_SERVER_URI}/roomTypes`
         );
-        const data = await response.json();
-        const typeData = await responseData.json();
-        setRoomsData(data);
-        setRoomTypeData(typeData);
+        if (!roomTypesResponse.ok) {
+          throw new Error("Failed to fetch room types");
+        }
+        const roomTypesData = await roomTypesResponse.json();
+        setRoomTypeData(roomTypesData);
+
+        // Handle room type filtering
+        const searchParams = new URLSearchParams(location.search);
+        const roomTypeId = searchParams.get("room_type");
+        if (roomTypeId) {
+          const roomType = roomTypesData.find((rt) => rt._id === roomTypeId);
+          if (roomType) {
+            setFilters((prev) => ({ ...prev, roomType: roomType.type }));
+          }
+        }
+
+        // Construct rooms fetch URL
+        let roomsUrl = new URL(`${process.env.REACT_APP_SERVER_URI}/rooms`);
+        searchParams.forEach((value, key) => {
+          roomsUrl.searchParams.append(key, value);
+        });
+
+        // Ensure available status if not specified
+        if (!searchParams.has("status")) {
+          roomsUrl.searchParams.append("status", "Available");
+        }
+
+        const roomsResponse = await fetch(roomsUrl.toString());
+        if (!roomsResponse.ok) {
+          throw new Error("Failed to fetch rooms");
+        }
+
+        const roomsData = await roomsResponse.json();
+        setRoomsData(roomsData);
+
+        // Update filters from URL params
+        setFilters((prev) => ({
+          ...prev,
+          ...parseSearchParams(location.search),
+        }));
       } catch (error) {
+        setError(error.message);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchRooms();
-  }, []);
-
-  const rooms = [
-    {
-      title: "Deluxe Room",
-      price: 200,
-      imgSrc:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-9adA4eaOlSpe_LJEKzxGJjigLJtjGs8ATg&s",
-      link: "/roomdetails/Deluxe",
-      amenities: ["Free Wi-Fi", "Ocean View", "Mini Bar", "Room Service"],
-      size: "45 m²",
-      maxGuests: 2,
-    },
-    {
-      title: "Luxury Suite",
-      price: 350,
-      imgSrc:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD6Kn6DuellFmvWWhJAmHXTedcQTEyJP8wgg&s",
-      link: "/roomdetails/LuxurySuite",
-      amenities: [
-        "Free Wi-Fi",
-        "Ocean View",
-        "Mini Bar",
-        "Room Service",
-        "Jacuzzi",
-      ],
-      size: "75 m²",
-      maxGuests: 4,
-    },
-    {
-      title: "Luxury Suite",
-      price: 350,
-      imgSrc:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD6Kn6DuellFmvWWhJAmHXTedcQTEyJP8wgg&s",
-      link: "/roomdetails/LuxurySuite",
-      amenities: [
-        "Free Wi-Fi",
-        "Ocean View",
-        "Mini Bar",
-        "Room Service",
-        "Jacuzzi",
-      ],
-      size: "75 m²",
-      maxGuests: 4,
-    },
-    {
-      title: "Luxury Suite",
-      price: 350,
-      imgSrc:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD6Kn6DuellFmvWWhJAmHXTedcQTEyJP8wgg&s",
-      link: "/roomdetails/LuxurySuite",
-      amenities: [
-        "Free Wi-Fi",
-        "Ocean View",
-        "Mini Bar",
-        "Room Service",
-        "Jacuzzi",
-      ],
-      size: "75 m²",
-      maxGuests: 4,
-    },
-    // ... Add similar detailed objects for other rooms
-  ];
+    fetchInitialData();
+  }, [location.search]);
 
   const handleSearch = async () => {
-    console.log(roomTypeData, "filters", filters);
-    const roomTypeID = roomTypeData.find(
-      (roomType) => roomType.type === filters.roomType
-    )._id;
-    console.log("roomTypeID", roomTypeID);
-    const obj = {
-      room_type: roomTypeID,
-      capacity: filters.capacity,
-      status: "Available",
-    };
-    const params = new URLSearchParams(obj);
-    const response = await fetch(
-      `${process.env.REACT_APP_SERVER_URI}/rooms?${params.toString()}`
-    );
-    const data = await response.json();
-    console.log("data", data);
-    setRoomsData(data);
+    try {
+      setLoading(true);
+      setError(null);
+      const searchParams = new URLSearchParams();
+
+      // Add filters to search params
+      if (filters.roomType) {
+        const roomTypeObj = roomTypeData.find(
+          (rt) => rt.type === filters.roomType
+        );
+        if (roomTypeObj) {
+          searchParams.append("room_type", roomTypeObj._id);
+        }
+      }
+
+      if (filters.capacity) {
+        searchParams.append("capacity", filters.capacity);
+      }
+
+      if (filters.checkIn) {
+        searchParams.append("checkIn", filters.checkIn);
+      }
+
+      if (filters.checkOut) {
+        searchParams.append("checkOut", filters.checkOut);
+      }
+
+      // Always include status=Available
+      searchParams.append("status", "Available");
+
+      // Update URL
+      window.history.pushState(
+        {},
+        "",
+        `${window.location.pathname}?${searchParams.toString()}`
+      );
+
+      // Fetch filtered rooms
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVER_URI}/rooms?${searchParams.toString()}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch rooms");
+      }
+
+      const data = await response.json();
+      setRoomsData(data);
+    } catch (error) {
+      setError("Error searching rooms. Please try again.");
+      console.error("Error searching rooms:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="rooms-page">
-      {/* Navbar */}
+    <div className="rl-container">
       <Header />
 
-      {/* Hero Section */}
-      <section className="rooms-hero">
-        <div className="hero-content">
+      <section className="rl-hero">
+        <div className="rl-hero-content">
           <h1>Discover Our Rooms</h1>
           <p>
             Experience luxury and comfort in our carefully designed
@@ -135,35 +174,36 @@ const RoomsList = () => {
         </div>
       </section>
 
-      {/* Search Section */}
-      <section className="search-section">
-        <div className="search-container">
-          <div className="search-input">
-            <span className="input-icon">📅</span>
+      <section className="rl-search-section">
+        <div className="rl-search-container">
+          <div className="rl-search-input">
+            <span className="rl-input-icon">📅</span>
             <input
               type="date"
               value={filters.checkIn}
               onChange={(e) =>
                 setFilters({ ...filters, checkIn: e.target.value })
               }
+              min={getTodayDate()}
               placeholder="Check-in Date"
             />
           </div>
 
-          <div className="search-input">
-            <span className="input-icon">📅</span>
+          <div className="rl-search-input">
+            <span className="rl-input-icon">📅</span>
             <input
               type="date"
               value={filters.checkOut}
               onChange={(e) =>
                 setFilters({ ...filters, checkOut: e.target.value })
               }
+              min={filters.checkIn || getTodayDate()}
               placeholder="Check-out Date"
             />
           </div>
 
-          <div className="search-input">
-            <span className="input-icon">👥</span>
+          <div className="rl-search-input">
+            <span className="rl-input-icon">👥</span>
             <input
               type="number"
               value={filters.capacity}
@@ -171,19 +211,20 @@ const RoomsList = () => {
                 setFilters({ ...filters, capacity: e.target.value })
               }
               min="1"
-              placeholder="Guests"
+              max="10"
+              placeholder="Number of Guests"
             />
           </div>
 
-          <div className="search-input">
-            <span className="input-icon">🏨</span>
+          <div className="rl-search-input">
+            <span className="rl-input-icon">🏨</span>
             <select
               value={filters.roomType}
               onChange={(e) =>
                 setFilters({ ...filters, roomType: e.target.value })
               }
             >
-              <option value="">Select Room Type</option>
+              <option value="">All Room Types</option>
               {roomTypeData.map((roomType) => (
                 <option key={roomType._id} value={roomType.type}>
                   {roomType.type}
@@ -192,83 +233,82 @@ const RoomsList = () => {
             </select>
           </div>
 
-          <button className="search-button" onClick={handleSearch}>
+          <button className="rl-search-button" onClick={handleSearch}>
             <span>🔍</span> Search Rooms
           </button>
         </div>
       </section>
 
-      {/* Rooms Grid */}
+      {error && <div className="rl-error-message">{error}</div>}
+
       {loading ? (
-        <p>Loading featured rooms...</p>
+        <div className="rl-loading">
+          <div className="rl-spinner"></div>
+          <p>Loading rooms...</p>
+        </div>
+      ) : roomsData.length === 0 ? (
+        <div className="rl-no-results">
+          <h3>No Rooms Found</h3>
+          <p>Try adjusting your search criteria</p>
+        </div>
       ) : (
-        <section className="rooms-grid">
-          {roomsData.map((room, index) => (
-            <div key={room._id} className="room-card">
-              <div className="room-image">
+        <section className="rl-rooms-grid">
+          {roomsData.map((room) => (
+            <div key={room._id} className="rl-room-card">
+              <div className="rl-room-image">
                 <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD6Kn6DuellFmvWWhJAmHXTedcQTEyJP8wgg&s"
-                  alt={room.room_type.type}
+                  src={getRoomTypeImage(room.room_type)}
+                  alt={room.room_type?.type}
+                  // onError={(e) => {
+                  //   e.target.onerror = null;
+                  //   e.target.src = {room.images[0].url};
+                  // }}
                 />
-                <div className="room-price">
-                  ${room.price.$numberDecimal}
+                <div className="rl-room-price">
+                  ${room.price?.$numberDecimal || "0"}
                   <span>/night</span>
                 </div>
               </div>
-              <div className="room-info">
-                <h3>{room.room_type.type}</h3>
-                <div className="room-details">
-                  <span>📏 {room.size}</span>
+              <div className="rl-room-info">
+                <h3>{room.room_type?.type || "Room"}</h3>
+                <div className="rl-room-details">
                   <span>👥 Up to {room.capacity} guests</span>
+                  <span
+                    className={`rl-status-badge rl-status-${room.status?.toLowerCase()}`}
+                  >
+                    {room.status}
+                  </span>
                 </div>
-                <div className="room-amenities">
-                  <span className="amenity-tag">✓ {room.amenities}</span>
+                <div className="rl-room-amenities">
+                  {room.amenities?.split(",").map((amenity, index) => (
+                    <span key={index} className="rl-amenity-tag">
+                      ✓ {amenity.trim()}
+                    </span>
+                  ))}
                 </div>
-                <div className="room-actions">
+                <div className="rl-room-actions">
                   <Link
                     to={`/roomDetails/${room._id}`}
-                    className="view-details-btn"
+                    className="rl-view-details-btn"
                   >
                     View Details
                   </Link>
-                  <Link to="/" className="book-now-btn"></Link>
+                  {room.status === "Available" && (
+                    <Link
+                      to={`/roomDetails/${room._id}`}
+                      className="rl-book-now-btn"
+                    >
+                      Book Now
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
           ))}
         </section>
       )}
-      {/* Footer */}
-      <footer className="footer">
-        <div className="footer-content">
-          <div className="footer-section">
-            <h3>James Holiday Inc.</h3>
-            <p>Experience luxury and comfort</p>
-          </div>
-          <div className="footer-section">
-            <h3>Quick Links</h3>
-            <ul>
-              <li>
-                <Link to="/terms">Terms of Service</Link>
-              </li>
-              <li>
-                <Link to="/privacy">Privacy Policy</Link>
-              </li>
-              <li>
-                <Link to="/faq">FAQs</Link>
-              </li>
-              <p className="footer-section">
-                &copy; 2024 James Holiday Inc. All rights reserved.
-              </p>
-            </ul>
-          </div>
-          <div className="footer-section">
-            <h3>Contact</h3>
-            <p>📞 +1 234 567 890</p>
-            <p>📧 info@jamesholiday.com</p>
-          </div>
-        </div>
-      </footer>
+
+      <Footer />
     </div>
   );
 };

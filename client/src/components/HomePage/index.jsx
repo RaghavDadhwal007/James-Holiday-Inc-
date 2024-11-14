@@ -1,46 +1,206 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import './homePage.css';
-import Header from '../Header';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import "./homePage.css";
+import Header from "../Header";
+import Footer from "../Footer";
+
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1566073771259-6a8506099945";
 
 const HomePage = () => {
+  const [roomTypeData, setRoomTypeData] = useState([]);
   const [searchData, setSearchData] = useState({
-    checkIn: '',
-    checkOut: '',
-    guests: 1,
-    roomType: ''
+    checkIn: "",
+    checkOut: "",
+    capacity: "",
+    roomType: "",
   });
-
   const [featuredRooms, setFeaturedRooms] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    console.log('Search Data:', searchData);
+  const getTodayDate = () => {
+    return new Date().toISOString().split("T")[0];
+  };
+
+  const getRoomImage = (roomType) => {
+    try {
+      if (roomType?.images?.length > 0) {
+        const primaryImage =
+          roomType.images.find((img) => img.isPrimary) || roomType.images[0];
+        return `${process.env.REACT_APP_SERVER_URI}${primaryImage.url}`;
+      }
+      return FALLBACK_IMAGE;
+    } catch (error) {
+      console.error("Error getting room image:", error);
+      return FALLBACK_IMAGE;
+    }
   };
 
   useEffect(() => {
-    const fetchFeaturedRooms = async () => {
+    const fetchInitialData = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_SERVER_URI}/rooms`);
-        const data = await response.json();
-        setFeaturedRooms(data);
+        setLoading(true);
+        setError(null);
+
+        // Fetch both rooms and room types
+        const [roomsResponse, roomTypesResponse] = await Promise.all([
+          fetch(`${process.env.REACT_APP_SERVER_URI}/rooms?status=Available`),
+          fetch(`${process.env.REACT_APP_SERVER_URI}/roomTypes`),
+        ]);
+
+        if (!roomsResponse.ok || !roomTypesResponse.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const roomsData = await roomsResponse.json();
+        const roomTypesData = await roomTypesResponse.json();
+
+        // Get one room per type and sort by price
+        const uniqueRoomTypes = new Map();
+
+        // Sort rooms by price before filtering
+        const sortedRooms = roomsData.sort(
+          (a, b) =>
+            parseFloat(a.price.$numberDecimal) -
+            parseFloat(b.price.$numberDecimal)
+        );
+
+        sortedRooms.forEach((room) => {
+          if (!uniqueRoomTypes.has(room.room_type._id)) {
+            // Count available rooms of this type
+            const availableRoomsOfType = roomsData.filter(
+              (r) =>
+                r.room_type._id === room.room_type._id &&
+                r.status === "Available"
+            ).length;
+
+            uniqueRoomTypes.set(room.room_type._id, {
+              ...room,
+              isLastAvailable: availableRoomsOfType === 1,
+              totalAvailable: availableRoomsOfType,
+            });
+          }
+        });
+
+        // Convert Map values to array
+        const filteredRooms = Array.from(uniqueRoomTypes.values());
+
+        setFeaturedRooms(filteredRooms);
+        setRoomTypeData(roomTypesData);
       } catch (error) {
-        console.error('Error fetching featured rooms:', error);
+        setError(error.message);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchFeaturedRooms();
+    fetchInitialData();
   }, []);
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    try {
+      const searchParams = new URLSearchParams();
+
+      if (searchData.roomType) {
+        const roomTypeObj = roomTypeData.find(
+          (roomType) => roomType.type === searchData.roomType
+        );
+        if (roomTypeObj) {
+          searchParams.append("room_type", roomTypeObj._id);
+        }
+      }
+
+      if (searchData.capacity) {
+        searchParams.append("capacity", searchData.capacity);
+      }
+
+      if (searchData.checkIn) {
+        searchParams.append("checkIn", searchData.checkIn);
+      }
+
+      if (searchData.checkOut) {
+        searchParams.append("checkOut", searchData.checkOut);
+      }
+
+      // Always include status=Available
+      searchParams.append("status", "Available");
+
+      // Navigate to rooms list with search params
+      window.location.href = `/roomsList?${searchParams.toString()}`;
+    } catch (error) {
+      setError("Error processing search. Please try again.");
+      console.error("Error processing search:", error);
+    }
+  };
+
+  const RoomCard = ({ room }) => {
+    const [imageError, setImageError] = useState(false);
+
+    return (
+      <div className="room-card">
+        <div className="room-image">
+          <img
+            src={imageError ? FALLBACK_IMAGE : getRoomImage(room.room_type)}
+            alt={room.room_type?.type || "Hotel Room"}
+            onError={() => setImageError(true)}
+            loading="lazy"
+          />
+          <div className="room-price">
+            ${room.price?.$numberDecimal || "0"}
+            <span>/night</span>
+          </div>
+        </div>
+        <div className="room-info">
+          <h3>{room.room_type?.type || "Room"}</h3>
+          <div className="room-details">
+            <span>👥 Up to {room.capacity} guests</span>
+            <div className="status-badges">
+              <span
+                className={`status-badge status-${room.status?.toLowerCase()}`}
+              >
+                {room.status}
+              </span>
+              {room.isLastAvailable && (
+                <span className="status-badge status-last-available">
+                  Last Available
+                </span>
+              )}
+              {room.totalAvailable > 1 && (
+                <span className="status-badge status-count">
+                  {room.totalAvailable} rooms available
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="room-amenities">
+            {room.amenities?.split(",").map((amenity, index) => (
+              <span key={index} className="amenity-tag">
+                ✓ {amenity.trim()}
+              </span>
+            ))}
+          </div>
+          <div className="room-actions">
+            <Link to={`/roomDetails/${room._id}`} className="view-details-btn">
+              View Details
+            </Link>
+            <Link to={`/roomDetails/${room._id}`} className="book-now-btn">
+              Book Now
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="homepage">
       <Header />
       <section className="hero">
         <img
-          src="https://i0.wp.com/theluxurytravelexpert.com/wp-content/uploads/2017/10/six-senses-zil-payson-seychelles.jpg?fit=1300%2C731&ssl=1"
+          src={FALLBACK_IMAGE}
           alt="Luxury Hotel View"
           className="hero-image"
         />
@@ -48,7 +208,7 @@ const HomePage = () => {
         <div className="hero-content">
           <h1>Experience Luxury Living</h1>
           <p>Discover comfort and elegance at its finest</p>
-          
+
           <form onSubmit={handleSearch} className="search-form">
             <div className="search-container">
               <div className="search-input">
@@ -56,50 +216,61 @@ const HomePage = () => {
                 <input
                   type="date"
                   value={searchData.checkIn}
-                  onChange={(e) => setSearchData({...searchData, checkIn: e.target.value})}
-                  min={new Date().toISOString().split('T')[0]}
+                  onChange={(e) =>
+                    setSearchData({ ...searchData, checkIn: e.target.value })
+                  }
+                  min={getTodayDate()}
+                  placeholder="Check-in Date"
                   required
                 />
               </div>
-              
+
               <div className="search-input">
                 <span className="input-icon">📅</span>
                 <input
                   type="date"
                   value={searchData.checkOut}
-                  onChange={(e) => setSearchData({...searchData, checkOut: e.target.value})}
-                  min={searchData.checkIn || new Date().toISOString().split('T')[0]}
+                  onChange={(e) =>
+                    setSearchData({ ...searchData, checkOut: e.target.value })
+                  }
+                  min={searchData.checkIn || getTodayDate()}
+                  placeholder="Check-out Date"
                   required
                 />
               </div>
-              
+
               <div className="search-input">
                 <span className="input-icon">👥</span>
                 <input
                   type="number"
-                  value={searchData.guests}
-                  onChange={(e) => setSearchData({...searchData, guests: e.target.value})}
+                  value={searchData.capacity}
+                  onChange={(e) =>
+                    setSearchData({ ...searchData, capacity: e.target.value })
+                  }
                   min="1"
                   max="10"
-                  placeholder="Guests"
+                  placeholder="Number of Guests"
                   required
                 />
               </div>
-              
+
               <div className="search-input">
                 <span className="input-icon">🏨</span>
                 <select
                   value={searchData.roomType}
-                  onChange={(e) => setSearchData({...searchData, roomType: e.target.value})}
-                  required
+                  onChange={(e) =>
+                    setSearchData({ ...searchData, roomType: e.target.value })
+                  }
                 >
-                  <option value="">Room Type</option>
-                  <option value="standard">Standard</option>
-                  <option value="deluxe">Deluxe</option>
-                  <option value="suite">Suite</option>
+                  <option value="">All Room Types</option>
+                  {roomTypeData.map((roomType) => (
+                    <option key={roomType._id} value={roomType.type}>
+                      {roomType.type}
+                    </option>
+                  ))}
                 </select>
               </div>
-              
+
               <button type="submit" className="search-button">
                 <span>🔍</span> Search
               </button>
@@ -109,33 +280,22 @@ const HomePage = () => {
       </section>
 
       <section className="featured-rooms">
-        <h2>Featured Rooms</h2>
+        <h2>Our Available Rooms</h2>
+        {error && <div className="error-message">{error}</div>}
+
         {loading ? (
-          <p>Loading featured rooms...</p>
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+          </div>
+        ) : featuredRooms.length === 0 ? (
+          <div className="no-results">
+            <h3>No Rooms Available</h3>
+            <p>Please check back later for available rooms</p>
+          </div>
         ) : (
           <div className="room-grid">
-            {featuredRooms.map(room => (
-              <div key={room._id} className="room-card">
-                <div className="room-image">
-                  <img src='https://images.unsplash.com/photo-1582719478250-c89cae4dc85b' alt={room?.room_type?.type} />
-                  <div className="room-price">${room.price.$numberDecimal}<span>/night</span></div>
-                </div>
-                <div className="room-details">
-                  <h3>{room.name}</h3>
-                  <div className="room-rating">
-                    <span className="stars">⭐ 5</span>
-                  </div>
-                  <ul className="room-features">
-                    <li>✓ {room.amenities}</li>
-                  </ul>
-                  <div className="room-actions">
-                    <Link to={`/roomDetails/${room._id}`} className="view-details">
-                      View Details
-                    </Link>
-                    <button className="book-now">Book Now</button>
-                  </div>
-                </div>
-              </div>
+            {featuredRooms.map((room) => (
+              <RoomCard key={room._id} room={room} />
             ))}
           </div>
         )}
@@ -166,33 +326,7 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-
-      <footer className="footer">
-        <div className="footer-content">
-          <div className="footer-section">
-            <h3>James Holiday Inc.</h3>
-            <p>Experience luxury and comfort</p>
-          </div>
-          
-          <div className="footer-section">
-            <h3>Quick Links</h3>
-            <ul>
-              <li><Link to="/about">About Us</Link></li>
-              <li><Link to="/rooms">Our Rooms</Link></li>
-              <li><Link to="/contact">Contact</Link></li>
-              <li><Link to="/privacy">Privacy Policy</Link></li>
-              <p className="footer-section"> &copy; 2024 James Holiday Inc. All rights reserved.</p>
-            </ul>
-          </div>
-          
-          <div className="footer-section">
-            <h3>Contact</h3>
-            <p>📍 123 Hotel Street, City</p>
-            <p>📞 +1 234 567 890</p>
-            <p>📧 info@jamesholiday.com</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
