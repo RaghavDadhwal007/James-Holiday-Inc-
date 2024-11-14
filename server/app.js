@@ -12,6 +12,7 @@ const roomTypeRoutes = require('./routes/roomTypeRoutes');
 const roomRoutes = require('./routes/roomRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const connectDB = require('./db');
+require('./redis');
 
 
 var app = express();
