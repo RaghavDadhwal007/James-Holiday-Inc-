@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import './loginForm.css';
+import "./loginForm.css";
 
 const LoginForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -15,7 +15,7 @@ const LoginForm = () => {
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
     setError("");
   };
@@ -26,16 +26,19 @@ const LoginForm = () => {
     setError("");
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_SERVER_URI}/users/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVER_URI}/users/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const result = await response.json();
       if (result.success) {
-        localStorage.setItem('token', result?.token);
-        navigate('/');
+        localStorage.setItem("token", result?.token);
+        navigate("/");
       } else {
         setError(result.message || "Login failed");
       }
@@ -52,7 +55,11 @@ const LoginForm = () => {
         <div className="login-left">
           <div className="overlay"></div>
           <div className="welcome-content">
-            <h2>Welcome Back to<br />James Holiday Inc.</h2>
+            <h2>
+              Welcome Back to
+              <br />
+              <Link to="/">James Holiday Inc</Link>
+            </h2>
             <p>Your luxury stay awaits you</p>
             <div className="benefits">
               <div className="benefit-item">✓ Exclusive Member Rates</div>
@@ -70,7 +77,7 @@ const LoginForm = () => {
 
           <form onSubmit={handleSubmit} className="login-form">
             {error && <div className="error-message">{error}</div>}
-            
+
             <div className="input-group">
               <div className="input-wrapper">
                 <span className="input-icon">📧</span>
@@ -109,12 +116,12 @@ const LoginForm = () => {
               </Link>
             </div>
 
-            <button 
-              type="submit" 
-              className={`login-button ${isLoading ? 'loading' : ''}`}
+            <button
+              type="submit"
+              className={`login-button ${isLoading ? "loading" : ""}`}
               disabled={isLoading}
             >
-              {isLoading ? 'Signing In...' : 'Sign In'}
+              {isLoading ? "Signing In..." : "Sign In"}
             </button>
 
             <div className="register-link">

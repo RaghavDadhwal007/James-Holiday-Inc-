@@ -13,71 +13,6 @@
   padding-top: 60px;
 }
 
-/* Navbar */
-.rd-navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: all 0.3s ease;
-}
-
-.rd-navbar-transparent {
-  background: transparent;
-  padding: 1.5rem 2rem;
-}
-
-.rd-navbar-scrolled {
-  background: white;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.rd-logo {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.rd-logo-image {
-  height: 40px;
-  width: auto;
-}
-
-.rd-company-name {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #333;
-  transition: color 0.3s ease;
-}
-
-.rd-navbar-transparent .rd-company-name {
-  color: white;
-}
-
-.rd-nav-links {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  list-style: none;
-}
-
-.rd-nav-links a {
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  padding: 0.5rem 1rem;
-  color: #333;
-}
-
-.rd-navbar-transparent .rd-nav-links a {
-  color: white;
-}
-
 /* Hero Section */
 .rd-hero {
   position: relative;
@@ -376,14 +311,20 @@
   transform: none;
 }
 
-/* Amenities */
-.rd-amenities {
-  max-width: 1200px;
-  margin: 4rem auto 0;
+/* Add these styles to your roomDetails.css file */
+
+.rd-amenities-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  margin-top: 2rem;
+  grid-column: 1 / -1; /* Makes it span full width */
 }
 
-.rd-amenities h2 {
-  font-size: 2rem;
+.rd-amenities-section h2 {
+  font-size: 1.8rem;
+  color: #333;
   margin-bottom: 2rem;
   text-align: center;
 }
@@ -391,15 +332,18 @@
 .rd-amenities-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .rd-amenity-card {
-  background: white;
-  padding: 2rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
   border-radius: 10px;
-  text-align: center;
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .rd-amenity-card:hover {
@@ -407,20 +351,59 @@
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
-.rd-amenity-icon {
-  font-size: 2.5rem;
+.rd-amenity-card span {
+  font-size: 2rem;
   margin-bottom: 1rem;
-  display: block;
 }
 
 .rd-amenity-card h3 {
-  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
   color: #333;
+  margin-bottom: 0.5rem;
 }
 
 .rd-amenity-card p {
   color: #666;
   font-size: 0.9rem;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .rd-amenities-section {
+    background: #2d2d2d;
+  }
+
+  .rd-amenities-section h2 {
+    color: #fff;
+  }
+
+  .rd-amenity-card {
+    background: #333;
+  }
+
+  .rd-amenity-card h3 {
+    color: #fff;
+  }
+
+  .rd-amenity-card p {
+    color: #ccc;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .rd-amenities-section {
+    padding: 1.5rem;
+  }
+
+  .rd-amenities-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .rd-amenity-card {
+    padding: 1rem;
+  }
 }
 
 /* Responsive Design */

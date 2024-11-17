@@ -1,0 +1,28 @@
+/* Footer */
+.footer {
+  background-color: #1a1a1a;
+  color: white;
+  padding: 1rem 1rem;   margin-top: 0;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-section h3 {
+  font-size: 1.2rem;   margin-bottom: 0.5rem;
+  color: white;
+}
+
+.footer-section ul {
+  display: none; }
+
+.footer-section p {
+  color: #ccc;
+  margin: 0;
+  font-size: 0.9rem; 
+}

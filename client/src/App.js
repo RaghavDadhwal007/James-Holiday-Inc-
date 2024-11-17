@@ -6,14 +6,15 @@ import UserVerification from './components/UserVerification';
 import ResetPassword from './components/ResetPassword';
 import UserProfile from './components/UserProfile';
 import HomePage from './components/HomePage';
-import BookingForm from './components/BookingForm';
 import MyBookings from './components/MyBookings';
 import RoomsList from './components/RoomsList';
 import RoomDetails from './components/RoomDetails';
 
-import AdminDashboard from './components/AdminDashboard';
+import AdminDashboard from './components/admin/AdminDashboard';
 import AdminRoomManagement from './components/admin/AdminRoomManagement/AdminRoomManagement';
 import AdminUserManagement from './components/admin/AdminUserManagement/AdminUserManagement';
+import AdminBookingManagement from './components/admin/AdminBookingManagement/AdminBookingManagement';
+import Success from './components/success';
 
 import './App.css';
 
@@ -29,7 +30,6 @@ function App() {
           <Route path="/reset-password/:token" element={<ResetPassword />} />
 
           <Route path="/" element={<HomePage />} />
-          <Route path="/bookingForm" element={<BookingForm />} />
           <Route path="/myBookings" element={<MyBookings />} />
           <Route path="/roomsList" element={<RoomsList />} />
           <Route path="/roomDetails/:id" element={<RoomDetails />} />
@@ -40,8 +40,14 @@ function App() {
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/rooms" element={<AdminRoomManagement />} />    
             <Route path="/admin/users" element={<AdminUserManagement />} />  
+              
+            <Route path="bookings" element={<AdminBookingManagement />} />
           </PrivateRoute>
 
+
+
+
+          <Route path="/success" element={<Success />} />
         </Routes>
       </div>
     </Router>
