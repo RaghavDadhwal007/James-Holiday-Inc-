@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import './SuccessPage.css';
+import { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import "./success.css";
 
 const SuccessPage = () => {
   const location = useLocation();
@@ -15,13 +15,16 @@ const SuccessPage = () => {
   }, [location]);
 
   const confirmPayment = async (sessionId) => {
-    const response = await fetch(`${process.env.REACT_APP_SERVER_URI}/confirm-payment`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ session_id: sessionId }),
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_SERVER_URI}/payment/confirm-payment`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ session_id: sessionId }),
+      }
+    );
 
     const result = await response.json();
 

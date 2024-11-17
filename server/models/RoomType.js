@@ -9,6 +9,14 @@ const roomTypeSchema = new mongoose.Schema({
     type: String, 
     required: true,
   },
+  images: [{
+    url: String,
+    alt: String,
+    isPrimary: {
+      type: Boolean,
+      default: false
+    }
+  }]
 });
 
 const RoomType = mongoose.model('RoomType', roomTypeSchema);

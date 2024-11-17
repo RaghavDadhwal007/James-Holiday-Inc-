@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import './registrationForm.css';
+import "./registrationForm.css";
 
 const RegistrationForm = () => {
   const navigate = useNavigate();
@@ -9,7 +9,7 @@ const RegistrationForm = () => {
     email: "",
     phone: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -17,14 +17,14 @@ const RegistrationForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     if (errors[name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: ''
+        [name]: "",
       }));
     }
   };
@@ -32,17 +32,20 @@ const RegistrationForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
-      const response = await fetch(`${process.env.REACT_APP_SERVER_URI}/users/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVER_URI}/users/register`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const result = await response.json();
       if (result.success) {
-        navigate('/login');
+        navigate("/login");
       } else {
         setErrors({ submit: result.message || "Registration failed" });
       }
@@ -59,7 +62,10 @@ const RegistrationForm = () => {
         <div className="register-left">
           <div className="overlay"></div>
           <div className="welcome-content">
-            <h2>Welcome to<br />James Holiday Inc.</h2>
+            <h2>
+              Welcome to
+              <br /> <Link to="/">James Holiday Inc</Link>
+            </h2>
             <p>Experience luxury and comfort</p>
             <div className="benefits">
               <div className="benefit-item">✓ Exclusive Offers</div>
@@ -71,7 +77,7 @@ const RegistrationForm = () => {
 
         <div className="register-right">
           <h1>Create Account</h1>
-          
+
           <form onSubmit={handleSubmit} className="register-form">
             <div className="form-row">
               <div className="input-group">
@@ -149,14 +155,16 @@ const RegistrationForm = () => {
               </div>
             </div>
 
-            {errors.submit && <div className="error-message">{errors.submit}</div>}
+            {errors.submit && (
+              <div className="error-message">{errors.submit}</div>
+            )}
 
-            <button 
-              type="submit" 
-              className={`register-button ${isLoading ? 'loading' : ''}`}
+            <button
+              type="submit"
+              className={`register-button ${isLoading ? "loading" : ""}`}
               disabled={isLoading}
             >
-              {isLoading ? 'Creating Account...' : 'Create Account'}
+              {isLoading ? "Creating Account..." : "Create Account"}
             </button>
 
             <div className="login-link">

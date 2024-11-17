@@ -1,488 +1,287 @@
 /* Base Styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.booking-page {
-  min-height: 100vh;
-  background-color: #f8f9fa;
-  padding-top: 80px;
-}
-
-/* Navbar styles same as homepage */
-.navbar {
+.jh-navbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease;
+  padding: 0.5rem 0;
 }
 
-.navbar-transparent {
-  background-color: transparent;
+.jh-navbar-transparent {
+  background-color: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
 }
 
-.navbar-scrolled {
+.jh-navbar-scrolled {
   background-color: white;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Booking Container */
-.booking-container {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 20px;
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 2rem;
-}
-
-.booking-content {
-  background: white;
-  border-radius: 15px;
-  padding: 2rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.booking-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.booking-header h1 {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 0.5rem;
-}
-
-.booking-header p {
-  color: #666;
-}
-
-/* Form Sections */
-.form-section {
-  margin-bottom: 2rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid #eee;
-}
-
-.form-section h2 {
-  font-size: 1.5rem;
-  color: #333;
-  margin-bottom: 1.5rem;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.input-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.input-group label {
-  margin-bottom: 0.5rem;
-  color: #555;
-  font-weight: 500;
-}
-
-.input-group input,
-.input-group select,
-.input-group textarea {
-  padding: 0.8rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-}
-
-.input-group textarea {
-  height: 100px;
-  resize: vertical;
-}
-
-.input-group input:focus,
-.input-group select:focus,
-.input-group textarea:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-}
-
-/* Form Actions */
-.form-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.submit-btn,
-.cancel-btn {
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  text-align: center;
-  text-decoration: none;
-}
-
-.submit-btn {
-  background: #007bff;
-  color: white;
-  border: none;
-  flex: 2;
-}
-
-.submit-btn:hover {
-  background: #0056b3;
-  transform: translateY(-2px);
-}
-
-.cancel-btn {
-  background: white;
-  color: #dc3545;
-  border: 1px solid #dc3545;
-  flex: 1;
-}
-
-.cancel-btn:hover {
-  background: #dc3545;
-  color: white;
-}
-
-/* Booking Summary */
-.booking-summary {
-  background: white;
-  border-radius: 15px;
-  padding: 2rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  height: fit-content;
-  position: sticky;
-  top: 100px;
-}
-
-.booking-summary h2 {
-  font-size: 1.5rem;
-  color: #333;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #eee;
-}
-
-.summary-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.summary-item {
+.jh-nav-content {
+  width: 100%; 
+  margin: 0 auto;
+  padding: 0 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 0;
 }
 
-/* Booking Summary (continued) */
-.summary-item span:first-child {
-  color: #666;
+/* Logo Styles */
+.jh-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
 }
 
-.summary-item span:last-child {
-  font-weight: 500;
-  color: #333;
+.jh-logo-image {
+  height: 40px;
+  width: 40px;
+  border-radius: 8px;
 }
 
-.price-summary {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #eee;
-}
-
-.price-summary .summary-item {
-  padding: 0.8rem 0;
-}
-
-.price-summary .total {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px dashed #ddd;
+.jh-company-name {
+  font-size: 1.25rem;
   font-weight: 600;
+  color: #333;
+  transition: color 0.3s ease;
 }
 
-.price-summary .total span {
-  font-size: 1.2rem;
-  color: #007bff;
-}
-
-/* Form Validation Styles */
-.input-group.error input,
-.input-group.error select,
-.input-group.error textarea {
-  border-color: #dc3545;
-}
-
-.input-group.success input,
-.input-group.success select,
-.input-group.success textarea {
-  border-color: #28a745;
-}
-
-/* Custom Date Input Styles */
-input[type="date"] {
-  position: relative;
-  padding-right: 35px;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  opacity: 0.6;
-  transition: opacity 0.3s ease;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator:hover {
-  opacity: 1;
-}
-
-/* Loading State */
-.submit-btn.loading {
-  position: relative;
-  opacity: 0.8;
-  cursor: not-allowed;
-}
-
-.submit-btn.loading::after {
-  content: "";
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  top: 50%;
-  right: 1rem;
-  transform: translateY(-50%);
-  border: 2px solid white;
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: translateY(-50%) rotate(360deg);
-  }
-}
-
-/* Tooltip Styles */
-.input-group .tooltip {
-  position: relative;
-  display: inline-block;
-  margin-left: 0.5rem;
-  color: #666;
-  cursor: help;
-}
-
-.input-group .tooltip:hover::before {
-  content: attr(data-tip);
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 0.5rem;
-  background: #333;
+.jh-navbar-transparent .jh-company-name {
   color: white;
-  font-size: 0.875rem;
-  border-radius: 4px;
-  white-space: nowrap;
-  z-index: 1;
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Navigation Links */
+.jh-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.booking-content,
-.booking-summary {
-  animation: fadeIn 0.5s ease-out;
+.jh-nav-item {
+  position: relative;
+}
+
+.jh-nav-link {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  padding: 0.5rem;
+  position: relative;
+  display: block;
+}
+
+.jh-navbar-transparent .jh-nav-link {
+  color: white;
+}
+
+.jh-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: currentColor;
+  transition: width 0.3s ease;
+}
+
+.jh-nav-link:hover::after {
+  width: 100%;
+}
+
+/* Auth Buttons */
+.jh-login-btn,
+.jh-signout-btn {
+  padding: 0.5rem 1.25rem;
+  border-radius: 25px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.jh-login-btn {
+  background-color: #007bff;
+  color: white !important;
+  border: none;
+}
+
+.jh-navbar-transparent .jh-login-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.jh-signout-btn {
+  background: none;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  cursor: pointer;
+}
+
+.jh-login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+.jh-signout-btn:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Mobile Menu Button */
+.jh-mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  position: relative;
+  z-index: 100;
+}
+
+.jh-menu-icon,
+.jh-menu-icon::before,
+.jh-menu-icon::after {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background-color: #333;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.jh-navbar-transparent .jh-menu-icon,
+.jh-navbar-transparent .jh-menu-icon::before,
+.jh-navbar-transparent .jh-menu-icon::after {
+  background-color: white;
+}
+
+.jh-menu-icon::before,
+.jh-menu-icon::after {
+  content: '';
+  position: absolute;
+  left: 0;
+}
+
+.jh-menu-icon::before {
+  top: -8px;
+}
+
+.jh-menu-icon::after {
+  top: 8px;
 }
 
 /* Responsive Design */
-@media (max-width: 1024px) {
-  .booking-container {
-    grid-template-columns: 1fr;
-  }
-
-  .booking-summary {
-    position: static;
-    margin-bottom: 2rem;
-  }
-}
-
 @media (max-width: 768px) {
-  .booking-page {
-    padding-top: 60px;
+  .jh-mobile-menu-btn {
+    display: block;
   }
 
-  .booking-container {
-    padding: 1rem;
-    margin: 1rem auto;
-  }
-
-  .booking-content,
-  .booking-summary {
-    padding: 1.5rem;
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .form-actions {
+  .jh-nav-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    height: 100vh;
+    width: 80%;
+    max-width: 400px;
+    background-color: white;
     flex-direction: column;
+    padding: 5rem 2rem;
+    transition: right 0.3s ease;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
   }
 
-  .submit-btn,
-  .cancel-btn {
+  .jh-nav-active {
+    right: 0;
+  }
+
+  .jh-nav-item {
     width: 100%;
   }
 
-  .booking-header h1 {
-    font-size: 1.75rem;
+  .jh-nav-link {
+    padding: 1rem;
+    color: #333 !important;
+  }
+
+  .jh-auth-item {
+    margin-top: 2rem;
+  }
+
+  .jh-login-btn,
+  .jh-signout-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Mobile Menu Animation */
+  .jh-nav-active ~ .jh-mobile-menu-btn .jh-menu-icon {
+    background-color: transparent;
+  }
+
+  .jh-nav-active ~ .jh-mobile-menu-btn .jh-menu-icon::before {
+    transform: rotate(45deg);
+    top: 0;
+  }
+
+  .jh-nav-active ~ .jh-mobile-menu-btn .jh-menu-icon::after {
+    transform: rotate(-45deg);
+    top: 0;
   }
 }
 
 /* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
-  .booking-page {
+  .jh-navbar-scrolled {
     background-color: #1a1a1a;
   }
 
-  .booking-content,
-  .booking-summary {
-    background-color: #2d2d2d;
-  }
-
-  .booking-header h1,
-  .form-section h2,
-  .booking-summary h2 {
+  .jh-navbar-scrolled .jh-company-name,
+  .jh-navbar-scrolled .jh-nav-link {
     color: white;
   }
 
-  .input-group label {
-    color: #ccc;
+  .jh-menu-icon,
+  .jh-menu-icon::before,
+  .jh-menu-icon::after {
+    background-color: white;
   }
 
-  .input-group input,
-  .input-group select,
-  .input-group textarea {
-    background-color: #333;
-    border-color: #444;
-    color: white;
-  }
+  @media (max-width: 768px) {
+    .jh-nav-links {
+      background-color: #1a1a1a;
+    }
 
-  .summary-item span:first-child {
-    color: #ccc;
-  }
-
-  .summary-item span:last-child {
-    color: white;
-  }
-
-  .price-summary {
-    border-top-color: #444;
-  }
-
-  .price-summary .total {
-    border-top-color: #444;
-  }
-}
-
-/* Accessibility */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-
-/* Focus Styles */
-button:focus,
-input:focus,
-select:focus,
-textarea:focus,
-a:focus {
-  outline: 3px solid rgba(0, 123, 255, 0.5);
-  outline-offset: 2px;
-}
-
-/* Print Styles */
-@media print {
-  .booking-page {
-    padding: 0;
-    background: white;
-  }
-
-  .navbar,
-  .form-actions {
-    display: none;
-  }
-
-  .booking-container {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .booking-content,
-  .booking-summary {
-    box-shadow: none;
-    padding: 0;
-  }
-
-  .input-group input,
-  .input-group select,
-  .input-group textarea {
-    border: 1px solid #ddd;
+    .jh-nav-link {
+      color: white !important;
+    }
   }
 }
 
 /* High Contrast Mode */
 @media (prefers-contrast: high) {
-  .booking-content,
-  .booking-summary {
-    border: 2px solid #000;
+  .jh-navbar-transparent {
+    background-color: black;
   }
 
-  .input-group input,
-  .input-group select,
-  .input-group textarea {
-    border: 2px solid #000;
+  .jh-login-btn,
+  .jh-signout-btn {
+    border: 2px solid currentColor;
   }
+}
 
-  .submit-btn {
-    background: #000;
-    color: #fff;
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .jh-navbar,
+  .jh-nav-links,
+  .jh-login-btn,
+  .jh-signout-btn {
+    transition: none;
   }
 }
