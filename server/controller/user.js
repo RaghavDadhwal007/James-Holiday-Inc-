@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const User = require("../models/User.js");
 require('dotenv').config();
+const redisClient = require('../redis');
 
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
@@ -183,5 +184,30 @@ exports.getUsers = async (req,res,next)=>{
     res.status(200).json(users);
   } catch (err) {
     next(err);
+  }
+}
+
+exports.getUser = async (req,res,next)=>{
+  const userId = req.params.id;
+
+  // Check Redis cache for the user data
+  const cachedUser = await redisClient.get(`user:${userId}`);
+  
+  if (cachedUser) {
+    return res.json(JSON.parse(cachedUser)); // Send cached data if available
+  }
+
+  // If not cached, fetch from MongoDB and set in Redis
+  try {
+    const user = await User.findById(userId);
+    
+    if (user) {
+      await redisClient.setEx(`user:${userId}`, 3600, JSON.stringify(user)); // Cache data for 1 hour
+      res.json(user);
+    } else {
+      res.status(404).send('User not found');
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 }
