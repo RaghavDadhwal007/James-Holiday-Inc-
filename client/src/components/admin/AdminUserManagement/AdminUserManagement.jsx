@@ -62,7 +62,7 @@ const AdminUserManagement = () => {
       let url, method, body;
 
       if (selectedUser) {
-        url = `${process.env.REACT_APP_SERVER_URI}/users/${selectedUser._id}`;
+        url = `${process.env.REACT_APP_SERVER_URI}/users/list/${selectedUser._id}`;
         method = "PUT";
         const { password, ...updateData } = formData;
         body = JSON.stringify(updateData);
@@ -100,7 +100,7 @@ const AdminUserManagement = () => {
 
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_SERVER_URI}/users/${userId}`,
+        `${process.env.REACT_APP_SERVER_URI}/users/list/${userId}`,
         {
           method: "DELETE",
           headers: {
