@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
 import RegistrationForm from './components/RegistrationForm';
 import LoginForm from './components/LoginForm';
 import ForgotPassword from "./components/ForgotPassword";
@@ -9,12 +10,12 @@ import HomePage from './components/HomePage';
 import MyBookings from './components/MyBookings';
 import RoomsList from './components/RoomsList';
 import RoomDetails from './components/RoomDetails';
-
 import AdminDashboard from './components/admin/AdminDashboard';
 import AdminRoomManagement from './components/admin/AdminRoomManagement/AdminRoomManagement';
 import AdminUserManagement from './components/admin/AdminUserManagement/AdminUserManagement';
 import AdminBookingManagement from './components/admin/AdminBookingManagement/AdminBookingManagement';
 import Success from './components/success';
+import PrivateRoute from './privateRoute';
 
 import './App.css';
 
@@ -34,7 +35,7 @@ function App() {
           <Route path="/roomsList" element={<RoomsList />} />
           <Route path="/roomDetails/:id" element={<RoomDetails />} />
           
-          <PrivateRoute>
+          <Route element={<PrivateRoute />}>
             <Route path="/userprofile" element={<UserProfile />} />
             
             <Route path="/admin" element={<AdminDashboard />} />
@@ -42,10 +43,7 @@ function App() {
             <Route path="/admin/users" element={<AdminUserManagement />} />  
               
             <Route path="bookings" element={<AdminBookingManagement />} />
-          </PrivateRoute>
-
-
-
+          </Route>
 
           <Route path="/success" element={<Success />} />
         </Routes>

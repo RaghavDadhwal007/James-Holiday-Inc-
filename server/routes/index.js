@@ -59,8 +59,6 @@ router.post('/qr', async (req, res) => {
       }
       res.status(200).json({ message: "Check-in email sent successfully." });
     });
-    // await sendCheckInEmail(customerEmail, qrCodeData);
-    // res.status(200).json({ message: 'Booking confirmed and email sent' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to send email' });
   }

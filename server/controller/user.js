@@ -190,14 +190,12 @@ exports.getUsers = async (req,res,next)=>{
 exports.getUser = async (req,res,next)=>{
   const userId = req.params.id;
 
-  // Check Redis cache for the user data
   const cachedUser = await redisClient.get(`user:${userId}`);
   
   if (cachedUser) {
-    return res.json(JSON.parse(cachedUser)); // Send cached data if available
+    return res.json(JSON.parse(cachedUser));
   }
 
-  // If not cached, fetch from MongoDB and set in Redis
   try {
     const user = await User.findById(userId);
     
