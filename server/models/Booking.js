@@ -8,11 +8,19 @@ const bookingSchema = new mongoose.Schema({
   check_out_date: { type: Date, required: true },
   number_of_guests: { type: Number, required: true },
   total_amount: { type: mongoose.Types.Decimal128, required: true },
-  status: { 
-    type: String, 
-    enum: ["Confirmed", "Canceled"], 
-    default: "Confirmed" 
+  isCheckedIn: {
+    type: Boolean, 
+    required: false
   },
+  alreadyCheckedIn: {
+    type: Boolean, 
+    required: false
+  },
+  // status: { 
+  //   type: String, 
+  //   enum: ["Confirmed", "Canceled"], 
+  //   default: "Confirmed" 
+  // },
 }, { timestamps: true });
 
 module.exports = mongoose.model("Booking", bookingSchema);

@@ -1,6 +1,6 @@
 const redis = require('redis');
 const redisClient = redis.createClient({
-  url: 'redis://localhost:6379', // Adjust the URL if you're using a remote Redis service
+  url: 'redis://localhost:6379',
 });
 
 redisClient.on('connect', () => {
@@ -11,6 +11,6 @@ redisClient.on('error', (err) => {
   console.error('Redis error:', err);
 });
 
-redisClient.connect();
+// redisClient.connect();
 
 module.exports = redisClient;

@@ -87,7 +87,10 @@ function RoomDetails() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const user_id = localStorage.getItem("user_id");
+    console.log("user_id", user_id);
 
+    // return;
     try {
       const stripe = await loadStripe(
         "pk_test_51QH8UhDVCApEbmXH0V05yN5isrK6roHA6ix4SyzpaxA1cWrfhPJSkWCI3fuTImeCVCgfjBCBkOn2i1ysZBov9vc500rvVtvsjX"
@@ -101,11 +104,12 @@ function RoomDetails() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            amount: Math.round(totalAmount * 100), // Convert to cents
-            roomId: id,
-            checkIn,
-            checkOut,
-            nights,
+            user_id,
+            room_id: id,
+            check_in_date: checkIn,
+            check_out_date: checkOut,
+            total_amount: totalAmount, // Convert to cents
+            number_of_guests: roomDetailsData?.capacity,
           }),
         }
       );

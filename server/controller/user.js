@@ -89,7 +89,7 @@ exports.loginUser = async (req, res) => {
 
     const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET, { expiresIn: "5h" });
 
-    res.status(200).json({ success: true, token, message: "Login successful" });
+    res.status(200).json({ success: true, token, message: "Login successful", data: user });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -169,14 +169,14 @@ exports.deleteUser = async (req,res,next)=>{
   }
 }
 
-exports.getUser = async (req,res,next)=>{
-  try {
-    const user = await User.findById(req.params.id);
-    res.status(200).json(user);
-  } catch (err) {
-    next(err);
-  }
-}
+// exports.getUser = async (req,res,next)=>{
+//   try {
+//     const user = await User.findById(req.params.id);
+//     res.status(200).json(user);
+//   } catch (err) {
+//     next(err);
+//   }
+// }
 
 exports.getUsers = async (req,res,next)=>{
   try {
@@ -190,14 +190,12 @@ exports.getUsers = async (req,res,next)=>{
 exports.getUser = async (req,res,next)=>{
   const userId = req.params.id;
 
-  // Check Redis cache for the user data
   const cachedUser = await redisClient.get(`user:${userId}`);
   
   if (cachedUser) {
-    return res.json(JSON.parse(cachedUser)); // Send cached data if available
+    return res.json(JSON.parse(cachedUser));
   }
 
-  // If not cached, fetch from MongoDB and set in Redis
   try {
     const user = await User.findById(userId);
     
@@ -209,5 +207,22 @@ exports.getUser = async (req,res,next)=>{
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+}
+
+exports.updateUser = async (req,res,next)=>{
+  try {
+    const users = await User.findByIdAndUpdate(req.params.id, req.body, {new: true});
+    res.status(200).json(users);
+  } catch (err) {
+    next(err);
+  }
+}
+exports.deleteUser = async (req,res,next)=>{
+  try {
+    const users = await User.findByIdAndDelete(req.params.id);
+    res.status(200).json(users);
+  } catch (err) {
+    next(err);
   }
 }

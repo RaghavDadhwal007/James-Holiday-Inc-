@@ -38,7 +38,13 @@ const LoginForm = () => {
       const result = await response.json();
       if (result.success) {
         localStorage.setItem("token", result?.token);
-        navigate("/");
+        localStorage.setItem("user_id", result?.data?._id);
+
+        if (result.data.isAdmin) {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
       } else {
         setError(result.message || "Login failed");
       }

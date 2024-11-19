@@ -28,32 +28,33 @@ const AdminBookingManagement = () => {
       if (!response.ok) throw new Error("Failed to fetch bookings");
 
       const data = await response.json();
+      console.log("data", data);
       // Fetch related data for each booking
-      const populatedBookings = await Promise.all(
-        data.map(async (booking) => {
-          const [userResponse, roomResponse] = await Promise.all([
-            fetch(
-              `${process.env.REACT_APP_SERVER_URI}/users/${booking.user_id}`
-            ),
-            fetch(
-              `${process.env.REACT_APP_SERVER_URI}/rooms/${booking.room_id}`
-            ),
-          ]);
+      // const populatedBookings = await Promise.all(
+      //   data.map(async (booking) => {
+      //     const [userResponse, roomResponse] = await Promise.all([
+      //       fetch(
+      //         `${process.env.REACT_APP_SERVER_URI}/users/${booking.user_id}`
+      //       ),
+      //       fetch(
+      //         `${process.env.REACT_APP_SERVER_URI}/rooms/${booking.room_id}`
+      //       ),
+      //     ]);
 
-          const [userData, roomData] = await Promise.all([
-            userResponse.json(),
-            roomResponse.json(),
-          ]);
+      //     const [userData, roomData] = await Promise.all([
+      //       userResponse.json(),
+      //       roomResponse.json(),
+      //     ]);
 
-          return {
-            ...booking,
-            user: userData,
-            room: roomData,
-          };
-        })
-      );
+      //     return {
+      //       ...booking,
+      //       user: userData,
+      //       room: roomData,
+      //     };
+      //   })
+      // );
 
-      setBookings(populatedBookings);
+      setBookings(data);
     } catch (err) {
       setError("Failed to fetch bookings");
       console.error("Error:", err);
@@ -70,15 +71,11 @@ const AdminBookingManagement = () => {
     });
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "Confirmed":
-        return "status-confirmed";
-      case "Canceled":
-        return "status-canceled";
-      default:
-        return "";
+  const getStatusColor = (isCheckedIn) => {
+    if (isCheckedIn) {
+      return "status-confirmed";
     }
+    return "status-canceled";
   };
 
   const getPaymentStatusColor = (status) => {
@@ -123,23 +120,24 @@ const AdminBookingManagement = () => {
           <div className="abm-detail-section">
             <h3>Guest Information</h3>
             <p>
-              <strong>Name:</strong> {booking.user?.name}
+              <strong>Name:</strong> {booking.user_id?.name}
             </p>
             <p>
-              <strong>Email:</strong> {booking.user?.email}
+              <strong>Email:</strong> {booking.user_id?.email}
             </p>
             <p>
-              <strong>Phone:</strong> {booking.user?.phone}
+              <strong>Phone:</strong> {booking.user_id?.phone}
             </p>
           </div>
 
           <div className="abm-detail-section">
             <h3>Room Information</h3>
             <p>
-              <strong>Room Type:</strong> {booking.room?.room_type?.type}
+              <strong>Room Type:</strong> {booking.room_id?.room_type?.type}
             </p>
             <p>
-              <strong>Room Price:</strong> ${booking.room?.price.$numberDecimal}
+              <strong>Room Price:</strong> $
+              {booking.room_id?.price.$numberDecimal}
               /night
             </p>
             <p>
@@ -156,9 +154,11 @@ const AdminBookingManagement = () => {
               <strong>Check-out:</strong> {formatDate(booking.check_out_date)}
             </p>
             <p>
-              <strong>Status:</strong>{" "}
-              <span className={`abm-status ${getStatusColor(booking.status)}`}>
-                {booking.status}
+              <strong>Checked In Status:</strong>{" "}
+              <span
+                className={`abm-status ${getStatusColor(booking.isCheckedIn)}`}
+              >
+                {booking.isCheckedIn ? "Yes" : "No"}
               </span>
             </p>
           </div>
@@ -193,25 +193,7 @@ const AdminBookingManagement = () => {
     <div className="abm-container">
       <div className="abm-header">
         <h1>Booking Management</h1>
-        <div className="abm-controls">
-          <div className="abm-search">
-            <input
-              type="text"
-              placeholder="Search by guest name, email, or booking ID"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="abm-filter"
-          >
-            <option value="all">All Bookings</option>
-            <option value="Confirmed">Confirmed</option>
-            <option value="Canceled">Canceled</option>
-          </select>
-        </div>
+        <div className="abm-controls"></div>
       </div>
 
       {error && <div className="abm-error">{error}</div>}
@@ -229,7 +211,7 @@ const AdminBookingManagement = () => {
                 <th>Check-in</th>
                 <th>Check-out</th>
                 <th>Total Amount</th>
-                <th>Status</th>
+                <th>Check-in Status</th>
                 <th>Payment Status</th>
                 <th>Actions</th>
               </tr>
@@ -238,16 +220,18 @@ const AdminBookingManagement = () => {
               {filteredBookings.map((booking) => (
                 <tr key={booking._id}>
                   <td>{booking._id}</td>
-                  <td>{booking.user?.name}</td>
-                  <td>{booking.room?.room_type?.type}</td>
+                  <td>{booking.user_id?.name}</td>
+                  <td>{booking.room_id?.room_type?.type}</td>
                   <td>{formatDate(booking.check_in_date)}</td>
                   <td>{formatDate(booking.check_out_date)}</td>
                   <td>${booking.total_amount.$numberDecimal}</td>
                   <td>
                     <span
-                      className={`abm-status ${getStatusColor(booking.status)}`}
+                      className={`abm-status ${getStatusColor(
+                        booking.isCheckedIn
+                      )}`}
                     >
-                      {booking.status}
+                      {booking.isCheckedIn ? "Yes" : "No"}
                     </span>
                   </td>
                   <td>
