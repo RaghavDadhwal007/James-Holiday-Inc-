@@ -5,7 +5,7 @@ const nodemailer = require('nodemailer');
 
 const generateQRCode = async (bookingId) => {
   try {
-    const url = `${process.env.CLIENT_URI}/checkin?bookingId=${bookingId}`;
+    const url = `${process.env.CLIENT_URI}/checkin/${bookingId}`;
     const qrCodeData = await QRCode.toDataURL(url); // Generates a Base64 string
     console.log('qrCodeData', qrCodeData)
     const qrCodeBuffer = await QRCode.toBuffer(url); // Generates a buffer

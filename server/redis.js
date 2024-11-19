@@ -11,6 +11,6 @@ redisClient.on('error', (err) => {
   console.error('Redis error:', err);
 });
 
-redisClient.connect();
+// redisClient.connect();
 
 module.exports = redisClient;
