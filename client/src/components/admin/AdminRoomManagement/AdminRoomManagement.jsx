@@ -1,5 +1,8 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
+import Modal from "../../Modal";
 import "./adminRoomManagement.css";
+import RoomForm from "../../RoomForm";
+import RoomTypeForm from "../../RoomTypeForm";
 
 const AdminRoomManagement = () => {
   // Room States
@@ -67,13 +70,13 @@ const AdminRoomManagement = () => {
   };
 
   // Room Form Handlers
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
 
   const resetForm = () => {
     setFormData({
@@ -88,13 +91,13 @@ const AdminRoomManagement = () => {
   };
 
   // Room Type Form Handlers
-  const handleRoomTypeInputChange = (e) => {
-    const { name, value } = e.target;
-    setRoomTypeFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  // const handleRoomTypeInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setRoomTypeFormData((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
 
   const resetRoomTypeForm = () => {
     setRoomTypeFormData({
@@ -104,7 +107,7 @@ const AdminRoomManagement = () => {
   };
 
   // Room CRUD Operations
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, formData) => {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -131,7 +134,7 @@ const AdminRoomManagement = () => {
     }
   };
 
-  const handleEdit = async (e) => {
+  const handleEdit = async (e, formData) => {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -178,7 +181,7 @@ const AdminRoomManagement = () => {
   };
 
   // Room Type CRUD Operations
-  const handleAddRoomType = async (e) => {
+  const handleAddRoomType = async (e, formData) => {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -189,7 +192,7 @@ const AdminRoomManagement = () => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(roomTypeFormData),
+          body: JSON.stringify(formData),
         }
       );
 
@@ -205,7 +208,7 @@ const AdminRoomManagement = () => {
     }
   };
 
-  const handleEditRoomType = async (e) => {
+  const handleEditRoomType = async (e, formData) => {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -216,7 +219,7 @@ const AdminRoomManagement = () => {
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(roomTypeFormData),
+          body: JSON.stringify(formData),
         }
       );
 
@@ -258,144 +261,147 @@ const AdminRoomManagement = () => {
   };
 
   // Component for Modal
-  const Modal = ({ isOpen, onClose, title, children }) => {
-    if (!isOpen) return null;
-
-    return (
-      <div className="modal-overlay">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h2 className="modal-title">{title}</h2>
-            <button onClick={onClose} className="modal-close">
-              ×
-            </button>
-          </div>
-          {children}
-        </div>
-      </div>
-    );
-  };
+  // const Modal = ({ isOpen, onClose, title, children }) => {
+  //   if (!isOpen) return null;
+  //   console.log('isOpen', isOpen)
+  //   return (
+  //     <div className="modal-overlay">
+  //       <div className="modal-content">
+  //         <div className="modal-header">
+  //           <h2 className="modal-title">{title}</h2>
+  //           <button onClick={onClose} className="modal-close">
+  //             ×
+  //           </button>
+  //         </div>
+  //         {children}
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
   // Room Form Component
-  const RoomForm = ({ onSubmit, submitButtonText, onClose }) => (
-    <form onSubmit={onSubmit} className="room-form">
-      <div className="form-group">
-        <label>Room Type</label>
-        <select
-          name="room_type"
-          value={formData.room_type}
-          onChange={handleInputChange}
-          required
-        >
-          <option value="">Select Room Type</option>
-          {roomTypes.map((type) => (
-            <option key={type._id} value={type._id}>
-              {type.type}
-            </option>
-          ))}
-        </select>
-      </div>
+  // const RoomForm = ({ onSubmit, submitButtonText, onClose }) => (
+  //   <form onSubmit={onSubmit} className="room-form">
+  //     <div className="form-group">
+  //       <label>Room Type</label>
+  //       <select
+  //         name="room_type"
+  //         value={formData.room_type}
+  //         onChange={handleInputChange}
+  //         required
+  //       >
+  //         <option value="">Select Room Type</option>
+  //         {roomTypes.map((type) => (
+  //           <option key={type._id} value={type._id}>
+  //             {type.type}
+  //           </option>
+  //         ))}
+  //       </select>
+  //     </div>
 
-      <div className="form-group">
-        <label>Price</label>
-        <input
-          type="number"
-          name="price"
-          value={formData.price}
-          onChange={handleInputChange}
-          required
-          min="0"
-          step="0.01"
-        />
-      </div>
+  //     <div className="form-group">
+  //       <label>Price</label>
+  //       <input
+  //         type="number"
+  //         name="price"
+  //         // defaultValue={formData.price}
+  //         // value={formData.price}
+  //         onChange={handleInputChange}
+  //         required
+  //         min="0"
+  //         step="0.01"
+  //       />
+  //     </div>
 
-      <div className="form-group">
-        <label>Capacity</label>
-        <input
-          type="number"
-          name="capacity"
-          value={formData.capacity}
-          onChange={handleInputChange}
-          required
-          min="1"
-        />
-      </div>
+  //     <div className="form-group">
+  //       <label>Capacity</label>
+  //       <input
+  //         type="number"
+  //         name="capacity"
+  //         value={formData.capacity}
+  //         onChange={handleInputChange}
+  //         required
+  //         min="1"
+  //       />
+  //     </div>
 
-      <div className="form-group">
-        <label>Amenities</label>
-        <input
-          type="text"
-          name="amenities"
-          value={formData.amenities}
-          onChange={handleInputChange}
-          required
-          placeholder="Enter amenities separated by commas"
-        />
-      </div>
+  //     <div className="form-group">
+  //       <label>Amenities</label>
+  //       <input
+  //         type="text"
+  //         name="amenities"
+  //         value={formData.amenities}
+  //         onChange={handleInputChange}
+  //         required
+  //         placeholder="Enter amenities separated by commas"
+  //       />
+  //     </div>
 
-      <div className="form-group">
-        <label>Status</label>
-        <select
-          name="status"
-          value={formData.status}
-          onChange={handleInputChange}
-          required
-        >
-          <option value="Available">Available</option>
-          <option value="Booked">Booked</option>
-          <option value="Out of Service">Out of Service</option>
-        </select>
-      </div>
+  //     <div className="form-group">
+  //       <label>Status</label>
+  //       <select
+  //         name="status"
+  //         value={formData.status}
+  //         onChange={handleInputChange}
+  //         required
+  //       >
+  //         <option value="Available">Available</option>
+  //         <option value="Booked">Booked</option>
+  //         <option value="Out of Service">Out of Service</option>
+  //       </select>
+  //     </div>
 
-      <div className="form-actions">
-        <button type="button" onClick={onClose} className="btn-secondary">
-          Cancel
-        </button>
-        <button type="submit" className="btn-primary" disabled={loading}>
-          {loading ? "Processing..." : submitButtonText}
-        </button>
-      </div>
-    </form>
-  );
+  //     <div className="form-actions">
+  //       <button type="button" onClick={onClose} className="btn-secondary">
+  //         Cancel
+  //       </button>
+  //       <button type="submit" className="btn-primary" disabled={loading}>
+  //         {loading ? "Processing..." : submitButtonText}
+  //       </button>
+  //     </div>
+  //   </form>
+  // );
 
   // Room Type Form Component
-  const RoomTypeForm = ({ onSubmit, submitButtonText, onClose }) => (
-    <form onSubmit={onSubmit} className="room-form">
-      <div className="form-group">
-        <label>Type Name</label>
-        <input
-          type="text"
-          name="type"
-          value={roomTypeFormData.type}
-          onChange={handleRoomTypeInputChange}
-          required
-          placeholder="Enter room type name"
-        />
-      </div>
+  // const RoomTypeForm = ({ onSubmit, submitButtonText, onClose }) => (
+  //   <form onSubmit={onSubmit} className="room-form">
+  //     <div className="form-group">
+  //       <label>Type Name</label>
+  //       <input
+  //         type="text"
+  //         name="type"
+  //         value={roomTypeFormData.type}
+  //         onChange={handleRoomTypeInputChange}
+  //         required
+  //         placeholder="Enter room type name"
+  //       />
+  //     </div>
 
-      <div className="form-group">
-        <label>Description</label>
-        <textarea
-          name="description"
-          value={roomTypeFormData.description}
-          onChange={handleRoomTypeInputChange}
-          required
-          placeholder="Enter room type description"
-          rows="4"
-          className="form-textarea"
-        />
-      </div>
+  //     <div className="form-group">
+  //       <label>Description</label>
+  //       <textarea
+  //         name="description"
+  //         value={roomTypeFormData.description}
+  //         onChange={handleRoomTypeInputChange}
+  //         required
+  //         placeholder="Enter room type description"
+  //         rows="4"
+  //         className="form-textarea"
+  //       />
+  //     </div>
 
-      <div className="form-actions">
-        <button type="button" onClick={onClose} className="btn-secondary">
-          Cancel
-        </button>
-        <button type="submit" className="btn-primary" disabled={loading}>
-          {loading ? "Processing..." : submitButtonText}
-        </button>
-      </div>
-    </form>
-  );
+  //     <div className="form-actions">
+  //       <button type="button" onClick={onClose} className="btn-secondary">
+  //         Cancel
+  //       </button>
+  //       <button type="submit" className="btn-primary" disabled={loading}>
+  //         {loading ? "Processing..." : submitButtonText}
+  //       </button>
+  //     </div>
+  //   </form>
+  // );
+
+  console.log('testing')
 
   return (
     <div className="admin-room-container">
@@ -445,13 +451,14 @@ const AdminRoomManagement = () => {
                         <button
                           onClick={() => {
                             setSelectedRoom(room);
-                            setFormData({
-                              room_type: room.room_type._id,
-                              price: room.price.$numberDecimal,
-                              capacity: room.capacity,
-                              amenities: room.amenities,
-                              status: room.status,
-                            });
+                            console.log('room', room)
+                            // setFormData({
+                            //   room_type: room.room_type._id,
+                            //   price: room.price.$numberDecimal,
+                            //   capacity: room.capacity,
+                            //   amenities: room.amenities,
+                            //   status: room.status,
+                            // });
                             setIsEditModalOpen(true);
                           }}
                           className="edit-btn"
@@ -542,6 +549,8 @@ const AdminRoomManagement = () => {
             onSubmit={handleSubmit}
             submitButtonText="Add Room"
             onClose={() => setIsAddModalOpen(false)}
+            roomTypes={roomTypes}
+            loading={loading}
           />
         </Modal>
 
@@ -558,6 +567,9 @@ const AdminRoomManagement = () => {
             onSubmit={handleEdit}
             submitButtonText="Update Room"
             onClose={() => setIsEditModalOpen(false)}
+            roomTypes={roomTypes}
+            loading={loading}
+            selectedRoom={selectedRoom}
           />
         </Modal>
 
@@ -574,6 +586,8 @@ const AdminRoomManagement = () => {
             onSubmit={handleAddRoomType}
             submitButtonText="Add Room Type"
             onClose={() => setIsAddRoomTypeModalOpen(false)}
+            loading={loading}
+            selectedRoom={roomTypeFormData}
           />
         </Modal>
 
@@ -590,6 +604,8 @@ const AdminRoomManagement = () => {
             onSubmit={handleEditRoomType}
             submitButtonText="Update Room Type"
             onClose={() => setIsEditRoomTypeModalOpen(false)}
+            loading={loading}
+            selectedRoom={roomTypeFormData}
           />
         </Modal>
       </div>
