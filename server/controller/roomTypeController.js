@@ -96,16 +96,6 @@ exports.deleteRoomType = async (req, res) => {
     const roomType = await RoomType.findByIdAndDelete(req.params.id);
     if (!roomType) return res.status(404).json({ error: 'Room type not found' });
     res.status(200).json({ message: 'Room type deleted successfully' });
-     // Delete associated images from filesystem
-     roomType.images.forEach(image => {
-      const imagePath = path.join(__dirname, '../public', image.url);
-      if (fs.existsSync(imagePath)) {
-        fs.unlinkSync(imagePath);
-      }
-    });
-
-    await RoomType.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: 'Room type deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Error deleting room type' });
   }
